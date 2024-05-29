@@ -1,35 +1,123 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import zoomSdk, {
+  ConfigResponse,
+  RunningContext,
+  Participant,
+} from '@zoom/appssdk';
+import { useEffect, useState, useCallback } from 'react';
+import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0)
+const App: React.FC = () => {
+  const [config, setConfig] = useState<ConfigResponse>();
+  const [runningContext, setRunningContext] = useState<RunningContext>();
+  const [participants, setParticipants] = useState<Participant[]>([]);
+
+  const init = useCallback(async () => {
+    const { context } = await zoomSdk.getRunningContext();
+    const { participants } = await zoomSdk.getMeetingParticipants();
+
+    setParticipants(participants);
+    setRunningContext(context);
+  }, []);
+
+  const closeRenderingContext = useCallback(async () => {
+    await zoomSdk.closeRenderingContext();
+  }, []);
+
+  const runRenderingContext = useCallback(async () => {
+    // const { meetingUUID } = await zoomSdk.getMeetingUUID();
+    // const userContext = await zoomSdk.getUserContext();
+
+    // console.log('userContext => ', userContext);
+    // console.log('meetingUUID => ', meetingUUID);
+    // await closeRenderingContext();
+
+    const response = await zoomSdk.runRenderingContext({
+      view: 'immersive',
+    });
+    console.log('runRenderingContext::camera => ', response);
+  }, []);
+
+  const drawWebview = useCallback(async () => {
+    await runRenderingContext();
+
+    const response = await zoomSdk.drawWebView({
+      webviewId: 'camera',
+      x: 0,
+      y: 0,
+      width: config?.media?.renderTarget?.width,
+      height: config?.media?.renderTarget?.height,
+      zIndex: 9,
+    });
+
+    await zoomSdk.showNotification({
+      // @ts-expect-error
+      title: 'Zoom SDK Notification',
+      type: 'info',
+      message: 'Would you like to join AI Companion?'
+    });
+
+    console.log('drawWebview::camera => ', response);
+  }, [runRenderingContext, config]);
+
+  useEffect(() => {
+    if (config) return;
+    (async () => {
+      const config = await zoomSdk.config({
+        capabilities: [
+          'getRunningContext',
+          'getAppContext',
+          'clearImage',
+          'clearParticipant',
+          'closeRenderingContext',
+          'connect',
+          'drawImage',
+          'drawParticipant',
+          'getMeetingParticipants',
+          'getMeetingUUID',
+          'getRunningContext',
+          'getUserContext',
+          'onConnect',
+          'onMeeting',
+          'onMessage',
+          'onMyMediaChange',
+          'onParticipantChange',
+          'postMessage',
+          'runRenderingContext',
+          'sendAppInvitationToAllParticipants',
+        ],
+      });
+      setConfig(config);
+
+      const context = await zoomSdk.getAppContext();
+      await init();
+
+      console.log('context => ', context);
+    })();
+  }, [config, init]);
+
+  useEffect(() => {
+    if (config) console.log('config => ', config);
+    if (participants.length !== 0)
+      console.log('participants => ', participants);
+    if (runningContext) console.log('runningContext => ', runningContext);
+  }, [config, participants, runningContext]);
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      {runningContext === 'inMeeting' && (
+        <>
+          <p className="read-the-docs">Zoom AI Notification</p>
+          <button onClick={drawWebview}>Draw Webview</button>
+          <button onClick={closeRenderingContext}>Close Webview</button>
+        </>
+      )}
+      {runningContext === 'inCamera' && (
+        <div className="glass">
+          <span className="name-tag">{participants[0].screenName}</span>
+        </div>
+      )}
     </>
-  )
-}
+  );
+};
 
-export default App
+export default App;
