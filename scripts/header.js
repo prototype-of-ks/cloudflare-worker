@@ -1,12 +1,8 @@
-import fs from "fs";
+import fs from 'fs';
 
 try {
-  fs.writeFileSync(
-    'dist/_headers',
-    fs.readFileSync('_headers').toString()
-  );
-
-  console.log('Header copied to "dist/_headers.txt"');
+  fs.writeFileSync('dist/_headers', fs.readFileSync('_headers').toString());
+  console.log('Header copied to "dist/_headers"');
 } catch (e) {
   console.error(e);
 }
