@@ -4,7 +4,7 @@ import zoomSdk from '@zoom/appssdk';
 import './App.css';
 
 const App: React.FC = () => {
-  const { config, runningContext, userContext } = useInit();
+  const { config, runningContext } = useInit();
 
   const closeRenderingContext = useCallback(async () => {
     await zoomSdk.closeRenderingContext();
@@ -77,9 +77,9 @@ const App: React.FC = () => {
   // }, [drawWebview, runRenderingContext]);
 
   useEffect(() => {
-    console.log('userContext => ', userContext);
+    // console.log('userContext => ', userContext);
     console.log('runningContext => ', runningContext);
-  }, [userContext, runningContext]);
+  }, [runningContext]);
 
   return (
     <>
