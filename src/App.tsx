@@ -77,8 +77,10 @@ const App: React.FC = () => {
   }, [config, runningContext, participants]);
 
   useEffect(() => {
-    applyListener();  
-  }, [applyListener]);
+    if (config) {
+      applyListener();
+    }
+  }, [applyListener, config]);
 
   return (
     <>
