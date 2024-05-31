@@ -25,13 +25,16 @@ const App: React.FC = () => {
   const drawWebview = useCallback(async () => {
     await runRenderingContext();
 
+    console.log('Width => ', config?.media?.renderTarget?.width);
+    console.log('Height => ', config?.media?.renderTarget?.height);
+
     const response = await zoomSdk.drawWebView({
       webviewId: 'camera',
       x: 0,
       y: 0,
       width: config?.media?.renderTarget?.width,
       height: config?.media?.renderTarget?.height,
-      zIndex: 2,
+      zIndex: 999,
     });
 
     console.log('drawWebview::camera => ', response);
