@@ -17,7 +17,7 @@ const App: React.FC = () => {
       });
       console.log('runRenderingContext::camera => ', response);
     } catch (e) {
-      console.error(JSON.stringify(String(e)));
+      console.error(e);
       await closeRenderingContext();
       const response = await zoomSdk.runRenderingContext({
         view: 'camera',
