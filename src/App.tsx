@@ -1,5 +1,6 @@
 import { useInit } from './hooks/zoom/useInit';
 import './App.css';
+import { useEffect } from 'react';
 
 const App: React.FC = () => {
   const { config, runningContext, userContext, zoomSdk } = useInit();
@@ -48,6 +49,18 @@ const App: React.FC = () => {
       console.error(JSON.stringify(String(e)));
     }
   };
+
+  useEffect(() => {
+    if (config) {
+      zoomSdk.onRunningContextChange((context) => {
+        console.log('onRunningContextChange => ', context);
+      });
+
+      zoomSdk.onRenderedAppOpened((event) => {
+        console.log('onRenderedAppOpened => ', event);
+      });
+    }
+  }, [config, zoomSdk]);
 
   return (
     <>
