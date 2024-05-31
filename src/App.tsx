@@ -1,14 +1,15 @@
 import { useEffect, useCallback } from 'react';
 import { useInit } from './hooks/zoom/useInit';
 import { OnMyMediaChangeEvent } from '@zoom/appssdk';
+import zoomSdk from '@zoom/appssdk';
 import './App.css';
 
 const App: React.FC = () => {
-  const { config, runningContext, zoomSdk, userContext } = useInit();
+  const { config, runningContext, userContext } = useInit();
 
   const closeRenderingContext = useCallback(async () => {
     await zoomSdk.closeRenderingContext();
-  }, [zoomSdk]);
+  }, []);
 
   const runRenderingContext = useCallback(async () => {
     try {
@@ -24,7 +25,7 @@ const App: React.FC = () => {
       // });
       // console.log('rerunRenderingContext::camera => ', response);
     }
-  }, [zoomSdk, closeRenderingContext]);
+  }, [closeRenderingContext]);
 
   const drawWebview = useCallback(async () => {
     await runRenderingContext();
@@ -46,7 +47,6 @@ const App: React.FC = () => {
   }, [
     userContext,
     runRenderingContext,
-    zoomSdk,
     config?.media?.renderTarget?.width,
     config?.media?.renderTarget?.height,
   ]);
@@ -83,7 +83,7 @@ const App: React.FC = () => {
         }
       }
     });
-  }, [zoomSdk, drawWebview]);
+  }, [drawWebview]);
 
   // useEffect(() => {
   //   if (config) console.log('config => ', config);
@@ -116,8 +116,6 @@ const App: React.FC = () => {
       {runningContext === 'inMeeting' && (
         <>
           <p className="read-the-docs">Zoom AI Companion Notification</p>
-          {/* <button onClick={drawWebview}>Draw Webview</button>
-          <button onClick={closeRenderingContext}>Close Webview</button> */}
           <button onClick={showNotification}>Show Notification</button>
         </>
       )}
