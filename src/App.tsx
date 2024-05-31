@@ -29,12 +29,13 @@ const App: React.FC = () => {
 
   const runRenderingContext = async () => {
     try {
+      await drawWebview();
+
       const response = await zoomSdk.runRenderingContext({
         view: 'camera',
       });
-
       console.log('runRenderingContext::camera => ', response);
-      await drawWebview();
+
     } catch (e) {
       console.error(e);
     }
