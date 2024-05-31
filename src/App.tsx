@@ -102,12 +102,8 @@ const App: React.FC = () => {
   }, [applyListener, config, drawWebview]);
 
   useEffect(() => {
-    (async () => {
-      await zoomSdk.getMeetingContext();
-      await zoomSdk.getAppContext();
-      // await zoomSdk.get
-    })();
-  }, [zoomSdk]);
+    console.log('userContext => ', userContext);
+  }, [userContext]);
 
   return (
     <>
