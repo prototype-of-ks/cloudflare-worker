@@ -120,7 +120,7 @@ const App: React.FC = () => {
       )}
       {runningContext === 'inCamera' && (
         <div className="glass">
-          <span className="name-tag">{userContext?.screenName || 'User Context'}</span>
+          <span className="name-tag">Here is your Screen Name</span>
         </div>
       )}
     </>
