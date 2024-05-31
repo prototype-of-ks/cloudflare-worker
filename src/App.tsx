@@ -4,7 +4,7 @@ import zoomSdk from '@zoom/appssdk';
 import './App.css';
 
 const App: React.FC = () => {
-  const { config, runningContext } = useInit();
+  const { config, runningContext, userContext } = useInit();
 
   const closeRenderingContext = async () => {
     await zoomSdk.closeRenderingContext();
@@ -68,7 +68,7 @@ const App: React.FC = () => {
       )}
       {runningContext === 'inCamera' && (
         <div className="glass">
-          <span className="name-tag">Here is your Screen Name</span>
+          <span className="name-tag">{userContext?.screenName}</span>
         </div>
       )}
     </>

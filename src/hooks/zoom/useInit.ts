@@ -14,8 +14,9 @@ export function useInit() {
   const init = useCallback(async () => {
     try {
       const { context } = await zoomSdk.getRunningContext();
-      setRunningContext(context);
       const userContext = await zoomSdk.getUserContext();
+
+      setRunningContext(context);
       setUserContext(userContext);
     } catch (e) {
       console.error(JSON.parse(String(e)));
