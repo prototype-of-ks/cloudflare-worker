@@ -57,10 +57,11 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
+    if (!config) return; 
     zoomSdk.onRunningContextChange((context) => {
       console.log('onRunningContextChange  => ', context.runningContext);
     });
-  }, []);
+  }, [config]);
 
   // const applyListener = useCallback(() => {
   //   zoomSdk.onParticipantChange((participants) => {
