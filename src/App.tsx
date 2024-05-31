@@ -7,16 +7,16 @@ import './App.css';
 const App: React.FC = () => {
   const { config, runningContext, userContext } = useInit();
 
-  const closeRenderingContext = useCallback(async () => {
-    await zoomSdk.closeRenderingContext();
-  }, []);
+  // const closeRenderingContext = useCallback(async () => {
+  //   await zoomSdk.closeRenderingContext();
+  // }, []);
 
   const runRenderingContext = useCallback(async () => {
     try {
       const response = await zoomSdk.runRenderingContext({
         view: 'camera',
       });
-      
+
       console.log('runRenderingContext::camera => ', response);
     } catch (e) {
       console.error(e);
@@ -83,7 +83,7 @@ const App: React.FC = () => {
         applyListener();
       }
     })();
-  }, [applyListener, config, drawWebview, closeRenderingContext]);
+  }, [applyListener, config]);
 
   useEffect(() => {
     console.log('userContext => ', userContext);
