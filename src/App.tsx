@@ -88,13 +88,13 @@ const App: React.FC = () => {
   useEffect(() => {
     (async () => {
       if (config) {
-        if (config.media?.video?.state) {
-          console.log('Video State: ', config.media.video.state);
-          if (config.media.video.state) {
-            await closeRenderingContext();
-          }
-          await drawWebview();
-        }
+        // if (config.media?.video?.state) {
+        //   console.log('Video State: ', config.media.video.state);
+        //   if (config.media.video.state) {
+        //     await closeRenderingContext();
+        //   }
+        //   await drawWebview();
+        // }
         applyListener();
       }
     })();
