@@ -1,26 +1,19 @@
-import { useEffect, useCallback } from 'react';
+
 import { useInit } from './hooks/zoom/useInit';
 import zoomSdk from '@zoom/appssdk';
 import './App.css';
 
 const App: React.FC = () => {
-  const { config, runningContext, userContext } = useInit();
+  const { config, runningContext } = useInit();
 
-  const closeRenderingContext = useCallback(async () => {
+  const closeRenderingContext = async () => {
     await zoomSdk.closeRenderingContext();
-  }, []);
+  };
 
-  const drawWebview = useCallback(async () => {
-    const drawParticipantResponse = await zoomSdk.drawParticipant({
-      participantUUID: userContext?.participantUUID,
-      x: 0,
-      y: 0,
-      width: config?.media?.renderTarget?.width,
-      height: config?.media?.renderTarget?.height,
-      zIndex: 1,
+  const drawWebview = async () => {
+    await zoomSdk.setVideoMirrorEffect({
+      mirrorMyVideo: false,
     });
-
-    console.log('drawParticipantResponse => ', drawParticipantResponse);
 
     const response = await zoomSdk.drawWebView({
       webviewId: 'camera',
@@ -32,13 +25,9 @@ const App: React.FC = () => {
     });
 
     console.log('drawWebview::camera => ', response);
-  }, [
-    userContext,
-    config?.media?.renderTarget?.width,
-    config?.media?.renderTarget?.height,
-  ]);
+  };
 
-  const runRenderingContext = useCallback(async () => {
+  const runRenderingContext = async () => {
     try {
       const response = await zoomSdk.runRenderingContext({
         view: 'camera',
@@ -50,7 +39,7 @@ const App: React.FC = () => {
     } catch (e) {
       console.error(e);
     }
-  }, [drawWebview]);
+  };
 
   const showNotification = async () => {
     try {
@@ -66,19 +55,6 @@ const App: React.FC = () => {
       console.error(JSON.stringify(String(e)));
     }
   };
-
-  useEffect(() => {
-    if (config) {
-      zoomSdk.onRunningContextChange((context) => {
-        console.log('onRunningContextChange  => ', context.runningContext);
-      });
-
-      zoomSdk.onRenderedAppOpened(async (event) => {
-        console.log('onRenderedAppOpened event => ', event);
-        await drawWebview();
-      });
-    }
-  }, [config, drawWebview]);
 
   return (
     <>
