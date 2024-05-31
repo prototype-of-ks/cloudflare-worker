@@ -1,10 +1,9 @@
 
 import { useInit } from './hooks/zoom/useInit';
-import zoomSdk from '@zoom/appssdk';
 import './App.css';
 
 const App: React.FC = () => {
-  const { config, runningContext, userContext } = useInit();
+  const { config, runningContext, userContext, zoomSdk } = useInit();
 
   const closeRenderingContext = async () => {
     await zoomSdk.closeRenderingContext();
