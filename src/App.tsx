@@ -7,9 +7,9 @@ import './App.css';
 const App: React.FC = () => {
   const { config, runningContext, userContext } = useInit();
 
-  // const closeRenderingContext = useCallback(async () => {
-  //   await zoomSdk.closeRenderingContext();
-  // }, []);
+  const closeRenderingContext = useCallback(async () => {
+    await zoomSdk.closeRenderingContext();
+  }, []);
 
   const runRenderingContext = useCallback(async () => {
     try {
@@ -24,6 +24,7 @@ const App: React.FC = () => {
   }, []);
 
   const drawWebview = useCallback(async () => {
+    await runRenderingContext();
     if (userContext && userContext.screenName) {
       const response = await zoomSdk.drawWebView({
         webviewId: 'camera',
@@ -37,6 +38,7 @@ const App: React.FC = () => {
       console.log('drawWebview::camera => ', response);
     }
   }, [
+    runRenderingContext,
     userContext,
     config?.media?.renderTarget?.width,
     config?.media?.renderTarget?.height,
@@ -80,7 +82,7 @@ const App: React.FC = () => {
   useEffect(() => {
     (async () => {
       if (config) {
-        applyListener();
+        // applyListener();
       }
     })();
   }, [applyListener, config]);
@@ -95,6 +97,8 @@ const App: React.FC = () => {
         <>
           <p className="read-the-docs">Zoom AI Companion Notification</p>
           <button onClick={showNotification}>Show Notification</button>
+          <button onClick={drawWebview}>Show Nametag</button>
+          <button onClick={closeRenderingContext}>Close</button>
         </>
       )}
       {runningContext === 'inCamera' && (
