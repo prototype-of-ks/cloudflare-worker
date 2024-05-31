@@ -1,4 +1,3 @@
-
 import { useInit } from './hooks/zoom/useInit';
 import './App.css';
 
@@ -34,7 +33,6 @@ const App: React.FC = () => {
 
       console.log('runRenderingContext::camera => ', response);
       await drawWebview();
-
     } catch (e) {
       console.error(e);
     }
@@ -57,6 +55,7 @@ const App: React.FC = () => {
 
   return (
     <>
+      <p>This is text content</p>
       {runningContext === 'inMeeting' && (
         <>
           <p className="read-the-docs">Zoom AI Companion Notification</p>
@@ -65,9 +64,11 @@ const App: React.FC = () => {
           <button onClick={closeRenderingContext}>Close</button>
         </>
       )}
+      {runningContext === 'inCamera' && (
         <div className="glass">
           <span className="name-tag">{userContext?.screenName}</span>
         </div>
+      )}
     </>
   );
 };
