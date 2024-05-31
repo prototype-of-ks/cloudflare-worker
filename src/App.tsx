@@ -16,6 +16,7 @@ const App: React.FC = () => {
       const response = await zoomSdk.runRenderingContext({
         view: 'camera',
       });
+      
       console.log('runRenderingContext::camera => ', response);
     } catch (e) {
       console.error(e);
@@ -32,9 +33,7 @@ const App: React.FC = () => {
         height: config?.media?.renderTarget?.height,
         zIndex: 9,
       });
-      // await zoomSdk.setVideoMirrorEffect({
-      //   mirrorMyVideo: false,
-      // });
+
       console.log('drawWebview::camera => ', response);
     }
   }, [
@@ -78,23 +77,9 @@ const App: React.FC = () => {
     });
   }, [drawWebview, runRenderingContext]);
 
-  // useEffect(() => {
-  //   if (config) console.log('config => ', config);
-  //   if (participants.length !== 0)
-  //     console.log('participants => ', participants);
-  //   if (runningContext) console.log('runningContext => ', runningContext);
-  // }, [config, runningContext, participants]);
-
   useEffect(() => {
     (async () => {
       if (config) {
-        // if (config.media?.video?.state) {
-        //   console.log('Video State: ', config.media.video.state);
-        //   if (config.media.video.state) {
-        //     await closeRenderingContext();
-        //   }
-        //   await drawWebview();
-        // }
         applyListener();
       }
     })();
