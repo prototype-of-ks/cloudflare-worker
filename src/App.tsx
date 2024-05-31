@@ -65,11 +65,9 @@ const App: React.FC = () => {
           <button onClick={closeRenderingContext}>Close</button>
         </>
       )}
-      {runningContext === 'inCamera' && (
         <div className="glass">
           <span className="name-tag">{userContext?.screenName}</span>
         </div>
-      )}
     </>
   );
 };
