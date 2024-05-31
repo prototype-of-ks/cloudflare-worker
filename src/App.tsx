@@ -24,21 +24,19 @@ const App: React.FC = () => {
 
   const drawWebview = useCallback(async () => {
     await runRenderingContext();
-    if (userContext && userContext.screenName) {
-      const response = await zoomSdk.drawWebView({
-        webviewId: 'camera',
-        x: 0,
-        y: 0,
-        width: config?.media?.renderTarget?.width,
-        height: config?.media?.renderTarget?.height,
-        zIndex: 9,
-      });
+    
+    const response = await zoomSdk.drawWebView({
+      webviewId: 'camera',
+      x: 0,
+      y: 0,
+      width: config?.media?.renderTarget?.width,
+      height: config?.media?.renderTarget?.height,
+      zIndex: 9,
+    });
 
-      console.log('drawWebview::camera => ', response);
-    }
+    console.log('drawWebview::camera => ', response);
   }, [
     runRenderingContext,
-    userContext,
     config?.media?.renderTarget?.width,
     config?.media?.renderTarget?.height,
   ]);
