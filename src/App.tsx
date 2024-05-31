@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from 'react';
-import './App.css';
 import { useInit } from './hooks/zoom/useInit';
+import './App.css';
 
 const App: React.FC = () => {
   const { config, runningContext, participants, zoomSdk } = useInit();
@@ -48,8 +48,8 @@ const App: React.FC = () => {
     try {
       const response = await zoomSdk.showNotification({
         // @ts-expect-error Argument of type '{ title: string; type: string; message: string; }' is not assignable to parameter of type 'NotificationOptions'.
-        title: 'Zoom SDK Notification',
         type: 'info',
+        title: 'Zoom SDK Notification',
         message: 'Would you like to join AI Companion?',
       });
 
@@ -59,12 +59,26 @@ const App: React.FC = () => {
     }
   };
 
+  const applyListener = useCallback(() => {
+    zoomSdk.onParticipantChange((participants) => {
+      console.log('participants => ', participants);
+    });
+
+    zoomSdk.onMyMediaChange((media) => {
+      console.log('media => ', media);
+    });
+  }, [zoomSdk]);
+
   useEffect(() => {
     if (config) console.log('config => ', config);
     if (participants.length !== 0)
       console.log('participants => ', participants);
     if (runningContext) console.log('runningContext => ', runningContext);
   }, [config, runningContext, participants]);
+
+  useEffect(() => {
+    applyListener();  
+  }, [applyListener]);
 
   return (
     <>
