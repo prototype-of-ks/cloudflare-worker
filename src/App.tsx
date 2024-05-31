@@ -1,5 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import { useInit } from './hooks/zoom/useInit';
+import { OnMyMediaChangeEvent } from '@zoom/appssdk';
 import './App.css';
 
 const App: React.FC = () => {
@@ -64,10 +65,20 @@ const App: React.FC = () => {
       console.log('participants => ', participants);
     });
 
-    zoomSdk.onMyMediaChange((media) => {
-      console.log('media => ', media);
+    zoomSdk.onMyMediaChange(async (event: OnMyMediaChangeEvent) => {
+      console.log('event => ', event);
+      const media = event.media as {
+        audio: { state: boolean };
+        video: { state: boolean };
+      };
+      if (media) {
+        if (media.video.state) {
+          console.log('My Media Changed to Video: open');
+          await drawWebview();
+        }
+      }
     });
-  }, [zoomSdk]);
+  }, [zoomSdk, drawWebview]);
 
   useEffect(() => {
     if (config) console.log('config => ', config);
@@ -77,10 +88,16 @@ const App: React.FC = () => {
   }, [config, runningContext, participants]);
 
   useEffect(() => {
-    if (config) {
-      applyListener();
-    }
-  }, [applyListener, config]);
+    (async () => {
+      if (config) {
+        if (config.media?.video?.state) {
+          console.log('Video State: ', config.media.video.state);
+          await drawWebview();
+        }
+        applyListener();
+      }
+    })();
+  }, [applyListener, config, drawWebview]);
 
   return (
     <>
