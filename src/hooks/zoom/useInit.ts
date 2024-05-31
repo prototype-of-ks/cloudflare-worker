@@ -37,8 +37,6 @@ export function useInit() {
           'drawImage',
           'drawParticipant',
           'getMeetingUUID',
-          'getRunningContext',
-          'getUserContext',
           'onConnect',
           'onMeeting',
           'onMessage',
@@ -49,10 +47,10 @@ export function useInit() {
           'sendAppInvitationToAllParticipants',
           'drawWebView',
           'onRunningContextChange',
-          'onMyMediaChange',
         //   @ts-expect-error Property 'onRenderedAppOpened' does not exist on type 'Capabilities'.
           'onRenderedAppOpened',
           'getUserContext',
+          'setVideoMirrorEffect',
         ],
       });
       setConfig(config);
@@ -69,5 +67,6 @@ export function useInit() {
     config,
     zoomSdk,
     userContext,
+    setRunningContext,
   };
 }

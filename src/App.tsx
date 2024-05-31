@@ -19,9 +19,9 @@ const App: React.FC = () => {
       webviewId: 'camera',
       x: 0,
       y: 0,
-      width: 1000,
-      height: 200,
-      zIndex: 2,
+      width: config?.media?.renderTarget?.width,
+      height: config?.media?.renderTarget?.height,
+      zIndex: 9,
     });
 
     console.log('drawWebview::camera => ', response);
@@ -31,7 +31,6 @@ const App: React.FC = () => {
     try {
       const response = await zoomSdk.runRenderingContext({
         view: 'camera',
-        defaultCutout: 'circle',
       });
 
       console.log('runRenderingContext::camera => ', response);
