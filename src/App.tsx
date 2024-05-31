@@ -2,6 +2,7 @@ import zoomSdk, {
   ConfigResponse,
   RunningContext,
   Participant,
+  GetUserContextResponse,
 } from '@zoom/appssdk';
 import { useEffect, useState, useCallback } from 'react';
 import './App.css';
@@ -10,6 +11,7 @@ const App: React.FC = () => {
   const [config, setConfig] = useState<ConfigResponse>();
   const [runningContext, setRunningContext] = useState<RunningContext>();
   const [participants, setParticipants] = useState<Participant[]>([]);
+  const [userContext, setUserContext] = useState<GetUserContextResponse>();
 
   const init = useCallback(async () => {
     const { context } = await zoomSdk.getRunningContext();
@@ -25,16 +27,17 @@ const App: React.FC = () => {
 
   const runRenderingContext = useCallback(async () => {
     // const { meetingUUID } = await zoomSdk.getMeetingUUID();
-    // const userContext = await zoomSdk.getUserContext();
-
-    // console.log('userContext => ', userContext);
+    const userContext = await zoomSdk.getUserContext();
     // console.log('meetingUUID => ', meetingUUID);
     // await closeRenderingContext();
-
     const response = await zoomSdk.runRenderingContext({
       view: 'camera',
     });
+
+    console.log('userContext => ', userContext);
     console.log('runRenderingContext::camera => ', response);
+
+    setUserContext(userContext);
 
   }, []);
 
@@ -73,6 +76,7 @@ const App: React.FC = () => {
           'connect',
           'drawImage',
           'drawParticipant',
+          'drawWebView',
           'getMeetingParticipants',
           'getMeetingUUID',
           'getRunningContext',
@@ -101,7 +105,8 @@ const App: React.FC = () => {
     if (participants.length !== 0)
       console.log('participants => ', participants);
     if (runningContext) console.log('runningContext => ', runningContext);
-  }, [config, participants, runningContext]);
+    if (userContext) console.log('userContext => ', userContext);
+  }, [config, participants, runningContext, userContext]);
 
   return (
     <>
@@ -114,7 +119,7 @@ const App: React.FC = () => {
       )}
       {runningContext === 'inCamera' && (
         <div className="glass">
-          <span className="name-tag">{participants[0].screenName}</span>
+          <span className="name-tag">{userContext?.screenName}</span>
         </div>
       )}
     </>
