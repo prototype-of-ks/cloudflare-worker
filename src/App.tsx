@@ -29,19 +29,22 @@ const App: React.FC = () => {
   const drawWebview = useCallback(async () => {
     await runRenderingContext();
 
-    const response = await zoomSdk.drawWebView({
-      webviewId: 'camera',
-      x: 0,
-      y: 0,
-      width: config?.media?.renderTarget?.width,
-      height: config?.media?.renderTarget?.height,
-      zIndex: 9,
-    });
-    // await zoomSdk.setVideoMirrorEffect({
-    //   mirrorMyVideo: false,
-    // });
-    console.log('drawWebview::camera => ', response);
+    if (userContext && userContext.screenName) {
+      const response = await zoomSdk.drawWebView({
+        webviewId: 'camera',
+        x: 0,
+        y: 0,
+        width: config?.media?.renderTarget?.width,
+        height: config?.media?.renderTarget?.height,
+        zIndex: 9,
+      });
+      // await zoomSdk.setVideoMirrorEffect({
+      //   mirrorMyVideo: false,
+      // });
+      console.log('drawWebview::camera => ', response);
+    }
   }, [
+    userContext,
     runRenderingContext,
     zoomSdk,
     config?.media?.renderTarget?.width,
