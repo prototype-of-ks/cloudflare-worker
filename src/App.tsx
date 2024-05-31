@@ -19,17 +19,10 @@ const App: React.FC = () => {
       console.log('runRenderingContext::camera => ', response);
     } catch (e) {
       console.error(e);
-      await closeRenderingContext();
-      // const response = await zoomSdk.runRenderingContext({
-      //   view: 'camera',
-      // });
-      // console.log('rerunRenderingContext::camera => ', response);
     }
-  }, [closeRenderingContext]);
+  }, []);
 
   const drawWebview = useCallback(async () => {
-    await runRenderingContext();
-
     if (userContext && userContext.screenName) {
       const response = await zoomSdk.drawWebView({
         webviewId: 'camera',
@@ -46,7 +39,6 @@ const App: React.FC = () => {
     }
   }, [
     userContext,
-    runRenderingContext,
     config?.media?.renderTarget?.width,
     config?.media?.renderTarget?.height,
   ]);
@@ -79,11 +71,12 @@ const App: React.FC = () => {
       if (media) {
         if (media.video.state) {
           console.log('My Media Changed to Video: open');
+          await runRenderingContext();
           await drawWebview();
         }
       }
     });
-  }, [drawWebview]);
+  }, [drawWebview, runRenderingContext]);
 
   // useEffect(() => {
   //   if (config) console.log('config => ', config);
