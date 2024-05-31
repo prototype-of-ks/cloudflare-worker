@@ -9,10 +9,6 @@ const App: React.FC = () => {
   };
 
   const drawWebview = async () => {
-    await zoomSdk.setVideoMirrorEffect({
-      mirrorMyVideo: false,
-    });
-
     const response = await zoomSdk.drawWebView({
       webviewId: 'camera',
       x: 0,
@@ -60,7 +56,7 @@ const App: React.FC = () => {
         <>
           <p className="read-the-docs">Zoom AI Companion Notification</p>
           <button onClick={showNotification}>Show Notification</button>
-          <button onClick={runRenderingContext}>Show Nametag</button>
+          <button onClick={runRenderingContext}>Render</button>
           <button onClick={closeRenderingContext}>Close</button>
         </>
       )}

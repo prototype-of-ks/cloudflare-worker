@@ -47,6 +47,12 @@ export function useInit() {
           'postMessage',
           'runRenderingContext',
           'sendAppInvitationToAllParticipants',
+          'drawWebView',
+          'onRunningContextChange',
+          'onMyMediaChange',
+        //   @ts-expect-error Property 'onRenderedAppOpened' does not exist on type 'Capabilities'.
+          'onRenderedAppOpened',
+          'getUserContext',
         ],
       });
       setConfig(config);
