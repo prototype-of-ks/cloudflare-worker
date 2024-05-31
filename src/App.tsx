@@ -10,18 +10,6 @@ const App: React.FC = () => {
     await zoomSdk.closeRenderingContext();
   }, []);
 
-  const runRenderingContext = useCallback(async () => {
-    try {
-      const response = await zoomSdk.runRenderingContext({
-        view: 'camera',
-      });
-
-      console.log('runRenderingContext::camera => ', response);
-    } catch (e) {
-      console.error(e);
-    }
-  }, []);
-
   const drawWebview = useCallback(async () => {
     const drawParticipantResponse = await zoomSdk.drawParticipant({
       participantUUID: userContext?.participantUUID,
@@ -46,10 +34,23 @@ const App: React.FC = () => {
     console.log('drawWebview::camera => ', response);
   }, [
     userContext,
-    runRenderingContext,
     config?.media?.renderTarget?.width,
     config?.media?.renderTarget?.height,
   ]);
+
+  const runRenderingContext = useCallback(async () => {
+    try {
+      const response = await zoomSdk.runRenderingContext({
+        view: 'camera',
+      });
+
+      console.log('runRenderingContext::camera => ', response);
+      await drawWebview();
+
+    } catch (e) {
+      console.error(e);
+    }
+  }, [drawWebview]);
 
   const showNotification = async () => {
     try {
@@ -67,16 +68,16 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!config) return;
-    zoomSdk.onRunningContextChange((context) => {
-      console.log('onRunningContextChange  => ', context.runningContext);
-    });
+    if (config) {
+      zoomSdk.onRunningContextChange((context) => {
+        console.log('onRunningContextChange  => ', context.runningContext);
+      });
 
-
-    zoomSdk.onRenderedAppOpened(async (event) => {
-      console.log('onRenderedAppOpened event => ', event);
-      await drawWebview();
-    });
+      zoomSdk.onRenderedAppOpened(async (event) => {
+        console.log('onRenderedAppOpened event => ', event);
+        await drawWebview();
+      });
+    }
   }, [config, drawWebview]);
 
   return (
