@@ -10,6 +10,11 @@ const App: React.FC = () => {
   };
 
   const drawWebview = async () => {
+
+    await zoomSdk.setVideoMirrorEffect({
+      mirrorMyVideo: false,
+    });
+
     const response = await zoomSdk.drawWebView({
       webviewId: 'camera',
       x: 0,
