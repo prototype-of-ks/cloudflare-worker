@@ -19,10 +19,10 @@ const App: React.FC = () => {
     } catch (e) {
       console.error(e);
       await closeRenderingContext();
-      const response = await zoomSdk.runRenderingContext({
-        view: 'camera',
-      });
-      console.log('rerunRenderingContext::camera => ', response);
+      // const response = await zoomSdk.runRenderingContext({
+      //   view: 'camera',
+      // });
+      // console.log('rerunRenderingContext::camera => ', response);
     }
   }, [zoomSdk, closeRenderingContext]);
 
@@ -97,12 +97,15 @@ const App: React.FC = () => {
       if (config) {
         if (config.media?.video?.state) {
           console.log('Video State: ', config.media.video.state);
+          if (config.media.video.state) {
+            await closeRenderingContext();
+          }
           await drawWebview();
         }
         applyListener();
       }
     })();
-  }, [applyListener, config, drawWebview]);
+  }, [applyListener, config, drawWebview, closeRenderingContext]);
 
   useEffect(() => {
     console.log('userContext => ', userContext);
