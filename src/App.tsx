@@ -4,7 +4,7 @@ import zoomSdk from '@zoom/appssdk';
 import './App.css';
 
 const App: React.FC = () => {
-  const { config, runningContext } = useInit();
+  const { config, runningContext, userContext } = useInit();
 
   const closeRenderingContext = useCallback(async () => {
     await zoomSdk.closeRenderingContext();
@@ -25,8 +25,16 @@ const App: React.FC = () => {
   const drawWebview = useCallback(async () => {
     await runRenderingContext();
 
-    console.log('Width => ', config?.media?.renderTarget?.width);
-    console.log('Height => ', config?.media?.renderTarget?.height);
+    const drawParticipantResponse = await zoomSdk.drawParticipant({
+      participantUUID: userContext?.participantUUID,
+      x: 0,
+      y: 0,
+      width: config?.media?.renderTarget?.width,
+      height: config?.media?.renderTarget?.height,
+      zIndex: 1,
+    });
+
+    console.log('drawParticipantResponse => ', drawParticipantResponse);
 
     const response = await zoomSdk.drawWebView({
       webviewId: 'camera',
@@ -34,11 +42,12 @@ const App: React.FC = () => {
       y: 0,
       width: config?.media?.renderTarget?.width,
       height: config?.media?.renderTarget?.height,
-      zIndex: 999,
+      zIndex: 2,
     });
 
     console.log('drawWebview::camera => ', response);
   }, [
+    userContext,
     runRenderingContext,
     config?.media?.renderTarget?.width,
     config?.media?.renderTarget?.height,
@@ -60,7 +69,7 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!config) return; 
+    if (!config) return;
     zoomSdk.onRunningContextChange((context) => {
       console.log('onRunningContextChange  => ', context.runningContext);
     });
