@@ -37,10 +37,9 @@ const App: React.FC = () => {
       height: config?.media?.renderTarget?.height,
       zIndex: 9,
     });
-
-    await zoomSdk.setVideoMirrorEffect({
-      mirrorMyVideo: false,
-    });
+    // await zoomSdk.setVideoMirrorEffect({
+    //   mirrorMyVideo: false,
+    // });
     console.log('drawWebview::camera => ', response);
   }, [
     runRenderingContext,
