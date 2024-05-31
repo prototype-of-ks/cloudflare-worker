@@ -1,22 +1,48 @@
-import { useInit } from './hooks/zoom/useInit';
+import zoomSdk, {
+  ConfigResponse,
+  RunningContext,
+  Participant,
+} from '@zoom/appssdk';
+import { useEffect, useState, useCallback } from 'react';
 import './App.css';
-import { useEffect } from 'react';
 
 const App: React.FC = () => {
-  const { config, runningContext, userContext, zoomSdk } = useInit();
+  const [config, setConfig] = useState<ConfigResponse>();
+  const [runningContext, setRunningContext] = useState<RunningContext>();
+  const [participants, setParticipants] = useState<Participant[]>([]);
 
-  const closeRenderingContext = async () => {
+  const init = useCallback(async () => {
+    const { context } = await zoomSdk.getRunningContext();
+    const { participants } = await zoomSdk.getMeetingParticipants();
+
+    setParticipants(participants);
+    setRunningContext(context);
+  }, []);
+
+  const closeRenderingContext = useCallback(async () => {
     await zoomSdk.closeRenderingContext();
-  };
+  }, []);
 
-  const drawWebview = async () => {
+  const runRenderingContext = useCallback(async () => {
+    // const { meetingUUID } = await zoomSdk.getMeetingUUID();
+    // const userContext = await zoomSdk.getUserContext();
 
-    await zoomSdk.setVideoMirrorEffect({
-      mirrorMyVideo: false,
+    // console.log('userContext => ', userContext);
+    // console.log('meetingUUID => ', meetingUUID);
+    // await closeRenderingContext();
+
+    const response = await zoomSdk.runRenderingContext({
+      view: 'camera',
     });
+    console.log('runRenderingContext::camera => ', response);
+
+  }, []);
+
+  const drawWebview = useCallback(async () => {
+    await runRenderingContext();
 
     const response = await zoomSdk.drawWebView({
-      webviewId: 'webview-1',
+      webviewId: 'camera',
       x: 0,
       y: 0,
       width: config?.media?.renderTarget?.width,
@@ -24,69 +50,71 @@ const App: React.FC = () => {
       zIndex: 9,
     });
 
+    await zoomSdk.showNotification({
+      // @ts-expect-error 111
+      title: 'Zoom SDK Notification',
+      type: 'info',       
+      message: 'Would you like to join AI Companion?'
+    });
+
     console.log('drawWebview::camera => ', response);
-  };
-
-  const runRenderingContext = async () => {
-    try {
-      const response1 = await zoomSdk.runRenderingContext({
-        view: 'camera',
-      });
-      console.log('runRenderingContext::camera => ', response1);
-
-      await drawWebview();
-
-      const response2 = await zoomSdk.runRenderingContext({
-        view: 'camera',
-      });
-      console.log('runRenderingContext::camera => ', response2);
-
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const showNotification = async () => {
-    try {
-      const response = await zoomSdk.showNotification({
-        // @ts-expect-error Argument of type '{ title: string; type: string; message: string; }' is not assignable to parameter of type 'NotificationOptions'.
-        type: 'info',
-        title: 'Zoom SDK Notification',
-        message: 'Would you like to join AI Companion?',
-      });
-
-      console.log('showNoficaition => ', response);
-    } catch (e) {
-      console.error(JSON.stringify(String(e)));
-    }
-  };
+  }, [runRenderingContext, config]);
 
   useEffect(() => {
-    if (config) {
-      zoomSdk.onRunningContextChange((context) => {
-        console.log('onRunningContextChange => ', context);
+    if (config) return;
+    (async () => {
+      const config = await zoomSdk.config({
+        capabilities: [
+          'getRunningContext',
+          'getAppContext',
+          'clearImage',
+          'clearParticipant',
+          'closeRenderingContext',
+          'connect',
+          'drawImage',
+          'drawParticipant',
+          'getMeetingParticipants',
+          'getMeetingUUID',
+          'getRunningContext',
+          'getUserContext',
+          'onConnect',
+          'onMeeting',
+          'onMessage',
+          'onMyMediaChange',
+          'onParticipantChange',
+          'postMessage',
+          'runRenderingContext',
+          'sendAppInvitationToAllParticipants',
+        ],
       });
+      setConfig(config);
 
-      zoomSdk.onRenderedAppOpened((event) => {
-        console.log('onRenderedAppOpened => ', event);
-      });
-    }
-  }, [config, zoomSdk]);
+      const context = await zoomSdk.getAppContext();
+      await init();
+
+      console.log('context => ', context);
+    })();
+  }, [config, init]);
+
+  useEffect(() => {
+    if (config) console.log('config => ', config);
+    if (participants.length !== 0)
+      console.log('participants => ', participants);
+    if (runningContext) console.log('runningContext => ', runningContext);
+  }, [config, participants, runningContext]);
 
   return (
     <>
-      <p>This is text content</p>
       {runningContext === 'inMeeting' && (
         <>
-          <p className="read-the-docs">Zoom AI Companion Notification</p>
-          <button onClick={showNotification}>Show Notification</button>
-          <button onClick={runRenderingContext}>Render</button>
-          <button onClick={closeRenderingContext}>Close</button>
+          <p className="read-the-docs">Zoom AI Notification</p>
+          <button onClick={drawWebview}>Draw Webview</button>
+          <button onClick={closeRenderingContext}>Close Webview</button>
         </>
       )}
       {runningContext === 'inCamera' && (
         <div className="glass">
-          <span className="name-tag">{userContext?.screenName}</span>
+          <span className="name-tag">{participants[0].screenName}</span>
         </div>
       )}
     </>
