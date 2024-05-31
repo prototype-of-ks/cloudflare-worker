@@ -1,6 +1,5 @@
 import { useEffect, useCallback } from 'react';
 import { useInit } from './hooks/zoom/useInit';
-import { OnMyMediaChangeEvent } from '@zoom/appssdk';
 import zoomSdk from '@zoom/appssdk';
 import './App.css';
 
@@ -59,25 +58,25 @@ const App: React.FC = () => {
     }
   };
 
-  const applyListener = useCallback(() => {
-    zoomSdk.onParticipantChange((participants) => {
-      console.log('participants => ', participants);
-    });
+  // const applyListener = useCallback(() => {
+  //   zoomSdk.onParticipantChange((participants) => {
+  //     console.log('participants => ', participants);
+  //   });
 
-    zoomSdk.onMyMediaChange(async (event: OnMyMediaChangeEvent) => {
-      const media = event.media as {
-        audio: { state: boolean };
-        video: { state: boolean };
-      };
-      if (media) {
-        if (media.video.state) {
-          console.log('My Media Changed to Video: open');
-          await runRenderingContext();
-          await drawWebview();
-        }
-      }
-    });
-  }, [drawWebview, runRenderingContext]);
+  //   zoomSdk.onMyMediaChange(async (event: OnMyMediaChangeEvent) => {
+  //     const media = event.media as {
+  //       audio: { state: boolean };
+  //       video: { state: boolean };
+  //     };
+  //     if (media) {
+  //       if (media.video.state) {
+  //         console.log('My Media Changed to Video: open');
+  //         await runRenderingContext();
+  //         await drawWebview();
+  //       }
+  //     }
+  //   });
+  // }, [drawWebview, runRenderingContext]);
 
   useEffect(() => {
     (async () => {
@@ -85,7 +84,7 @@ const App: React.FC = () => {
         // applyListener();
       }
     })();
-  }, [applyListener, config]);
+  }, [config]);
 
   useEffect(() => {
     console.log('userContext => ', userContext);
