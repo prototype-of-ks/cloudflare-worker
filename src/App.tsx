@@ -4,7 +4,7 @@ import { OnMyMediaChangeEvent } from '@zoom/appssdk';
 import './App.css';
 
 const App: React.FC = () => {
-  const { config, runningContext, participants, zoomSdk } = useInit();
+  const { config, runningContext, zoomSdk, userContext } = useInit();
 
   const closeRenderingContext = useCallback(async () => {
     await zoomSdk.closeRenderingContext();
@@ -37,6 +37,10 @@ const App: React.FC = () => {
       height: config?.media?.renderTarget?.height,
       zIndex: 9,
     });
+
+    await zoomSdk.setVideoMirrorEffect({
+      mirrorMyVideo: false,
+    });
     console.log('drawWebview::camera => ', response);
   }, [
     runRenderingContext,
@@ -66,7 +70,6 @@ const App: React.FC = () => {
     });
 
     zoomSdk.onMyMediaChange(async (event: OnMyMediaChangeEvent) => {
-      console.log('event => ', event);
       const media = event.media as {
         audio: { state: boolean };
         video: { state: boolean };
@@ -80,12 +83,12 @@ const App: React.FC = () => {
     });
   }, [zoomSdk, drawWebview]);
 
-  useEffect(() => {
-    if (config) console.log('config => ', config);
-    if (participants.length !== 0)
-      console.log('participants => ', participants);
-    if (runningContext) console.log('runningContext => ', runningContext);
-  }, [config, runningContext, participants]);
+  // useEffect(() => {
+  //   if (config) console.log('config => ', config);
+  //   if (participants.length !== 0)
+  //     console.log('participants => ', participants);
+  //   if (runningContext) console.log('runningContext => ', runningContext);
+  // }, [config, runningContext, participants]);
 
   useEffect(() => {
     (async () => {
@@ -99,21 +102,31 @@ const App: React.FC = () => {
     })();
   }, [applyListener, config, drawWebview]);
 
+  useEffect(() => {
+    (async () => {
+      await zoomSdk.getMeetingContext();
+      await zoomSdk.getAppContext();
+      // await zoomSdk.get
+    })();
+  }, [zoomSdk]);
+
   return (
     <>
       {runningContext === 'inMeeting' && (
         <>
-          <p className="read-the-docs">Zoom AI Notification</p>
-          <button onClick={drawWebview}>Draw Webview</button>
-          <button onClick={closeRenderingContext}>Close Webview</button>
+          <p className="read-the-docs">Zoom AI Companion Notification</p>
+          {/* <button onClick={drawWebview}>Draw Webview</button>
+          <button onClick={closeRenderingContext}>Close Webview</button> */}
           <button onClick={showNotification}>Show Notification</button>
         </>
       )}
-      {runningContext === 'inCamera' && (
-        <div className="glass">
-          <span className="name-tag">Here is your screen Name</span>
-        </div>
-      )}
+      {runningContext === 'inCamera' &&
+        userContext &&
+        userContext.screenName && (
+          <div className="glass">
+            <span className="name-tag">{userContext.screenName}</span>
+          </div>
+        )}
     </>
   );
 };

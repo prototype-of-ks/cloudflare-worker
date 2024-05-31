@@ -1,4 +1,4 @@
-import { Participant, RunningContext, ConfigResponse } from '@zoom/appssdk';
+import { Participant, RunningContext, ConfigResponse, GetUserContextResponse } from '@zoom/appssdk';
 import zoomSdk from '@zoom/appssdk';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -6,6 +6,7 @@ export function useInit() {
   const [config, setConfig] = useState<ConfigResponse>();
   const [runningContext, setRunningContext] = useState<RunningContext>();
   const [participants, setParticipants] = useState<Participant[]>([]);
+  const [userContext, setUserContext] = useState<GetUserContextResponse>();
 
   const init = useCallback(async () => {
     try {
@@ -13,6 +14,8 @@ export function useInit() {
       setRunningContext(context);
       const { participants } = await zoomSdk.getMeetingParticipants();
       setParticipants(participants);
+      const userContext = await zoomSdk.getUserContext();
+      setUserContext(userContext);
     } catch (e) {
       console.error(JSON.parse(String(e)));
     }
@@ -57,6 +60,7 @@ export function useInit() {
     runningContext,
     config,
     participants,
-    zoomSdk
+    zoomSdk,
+    userContext,
   };
 }
