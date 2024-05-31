@@ -16,7 +16,7 @@ const App: React.FC = () => {
     });
 
     const response = await zoomSdk.drawWebView({
-      webviewId: 'camera',
+      webviewId: 'webview-1',
       x: 0,
       y: 0,
       width: config?.media?.renderTarget?.width,
@@ -29,12 +29,17 @@ const App: React.FC = () => {
 
   const runRenderingContext = async () => {
     try {
-      await drawWebview();
-
-      const response = await zoomSdk.runRenderingContext({
+      const response1 = await zoomSdk.runRenderingContext({
         view: 'camera',
       });
-      console.log('runRenderingContext::camera => ', response);
+      console.log('runRenderingContext::camera => ', response1);
+
+      await drawWebview();
+
+      const response2 = await zoomSdk.runRenderingContext({
+        view: 'camera',
+      });
+      console.log('runRenderingContext::camera => ', response2);
 
     } catch (e) {
       console.error(e);

@@ -24,22 +24,15 @@ export function useInit() {
   }, []);
 
   useEffect(() => {
-    if (config) return;
     (async () => {
       const config = await zoomSdk.config({
         capabilities: [
           'getRunningContext',
           'getAppContext',
-          'clearImage',
-          'clearParticipant',
           'closeRenderingContext',
           'connect',
-          'drawImage',
           'drawParticipant',
           'getMeetingUUID',
-          'onConnect',
-          'onMeeting',
-          'onMessage',
           'onMyMediaChange',
           'onParticipantChange',
           'postMessage',
@@ -47,7 +40,7 @@ export function useInit() {
           'sendAppInvitationToAllParticipants',
           'drawWebView',
           'onRunningContextChange',
-        //   @ts-expect-error Property 'onRenderedAppOpened' does not exist on type 'Capabilities'.
+          //   @ts-expect-error Property 'onRenderedAppOpened' does not exist on type 'Capabilities'.
           'onRenderedAppOpened',
           'getUserContext',
           'setVideoMirrorEffect',
@@ -60,7 +53,7 @@ export function useInit() {
 
       console.log('context => ', context);
     })();
-  }, [config, init]);
+  }, [init]);
 
   return {
     runningContext,
