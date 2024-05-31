@@ -23,8 +23,6 @@ const App: React.FC = () => {
   }, []);
 
   const drawWebview = useCallback(async () => {
-    await runRenderingContext();
-
     const drawParticipantResponse = await zoomSdk.drawParticipant({
       participantUUID: userContext?.participantUUID,
       x: 0,
@@ -73,32 +71,13 @@ const App: React.FC = () => {
     zoomSdk.onRunningContextChange((context) => {
       console.log('onRunningContextChange  => ', context.runningContext);
     });
-  }, [config]);
 
-  // const applyListener = useCallback(() => {
-  //   zoomSdk.onParticipantChange((participants) => {
-  //     console.log('participants => ', participants);
-  //   });
 
-  //   zoomSdk.onMyMediaChange(async (event: OnMyMediaChangeEvent) => {
-  //     const media = event.media as {
-  //       audio: { state: boolean };
-  //       video: { state: boolean };
-  //     };
-  //     if (media) {
-  //       if (media.video.state) {
-  //         console.log('My Media Changed to Video: open');
-  //         await runRenderingContext();
-  //         await drawWebview();
-  //       }
-  //     }
-  //   });
-  // }, [drawWebview, runRenderingContext]);
-
-  useEffect(() => {
-    // console.log('userContext => ', userContext);
-    console.log('runningContext => ', runningContext);
-  }, [runningContext]);
+    zoomSdk.onRenderedAppOpened(async (event) => {
+      console.log('onRenderedAppOpened event => ', event);
+      await drawWebview();
+    });
+  }, [config, drawWebview]);
 
   return (
     <>
@@ -106,7 +85,7 @@ const App: React.FC = () => {
         <>
           <p className="read-the-docs">Zoom AI Companion Notification</p>
           <button onClick={showNotification}>Show Notification</button>
-          <button onClick={drawWebview}>Show Nametag</button>
+          <button onClick={runRenderingContext}>Show Nametag</button>
           <button onClick={closeRenderingContext}>Close</button>
         </>
       )}
