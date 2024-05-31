@@ -56,6 +56,12 @@ const App: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    zoomSdk.onRunningContextChange((context) => {
+      console.log('onRunningContextChange  => ', context.runningContext);
+    });
+  }, []);
+
   // const applyListener = useCallback(() => {
   //   zoomSdk.onParticipantChange((participants) => {
   //     console.log('participants => ', participants);
