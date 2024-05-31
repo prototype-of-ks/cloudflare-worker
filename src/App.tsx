@@ -118,13 +118,11 @@ const App: React.FC = () => {
           <button onClick={showNotification}>Show Notification</button>
         </>
       )}
-      {runningContext === 'inCamera' &&
-        userContext &&
-        userContext.screenName && (
-          <div className="glass">
-            <span className="name-tag">{userContext.screenName}</span>
-          </div>
-        )}
+      {runningContext === 'inCamera' && (
+        <div className="glass">
+          <span className="name-tag">{userContext?.screenName}</span>
+        </div>
+      )}
     </>
   );
 };
