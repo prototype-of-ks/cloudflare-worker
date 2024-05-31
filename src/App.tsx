@@ -24,14 +24,14 @@ const App: React.FC = () => {
 
   const drawWebview = useCallback(async () => {
     await runRenderingContext();
-    
+
     const response = await zoomSdk.drawWebView({
       webviewId: 'camera',
       x: 0,
       y: 0,
       width: config?.media?.renderTarget?.width,
       height: config?.media?.renderTarget?.height,
-      zIndex: 9,
+      zIndex: 2,
     });
 
     console.log('drawWebview::camera => ', response);
@@ -77,16 +77,9 @@ const App: React.FC = () => {
   // }, [drawWebview, runRenderingContext]);
 
   useEffect(() => {
-    (async () => {
-      if (config) {
-        // applyListener();
-      }
-    })();
-  }, [config]);
-
-  useEffect(() => {
     console.log('userContext => ', userContext);
-  }, [userContext]);
+    console.log('runningContext => ', runningContext);
+  }, [userContext, runningContext]);
 
   return (
     <>
