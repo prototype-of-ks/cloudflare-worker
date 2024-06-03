@@ -17,6 +17,11 @@ const App: React.FC = () => {
     const { context } = await zoomSdk.getRunningContext();
     const { participants } = await zoomSdk.getMeetingParticipants();
     const userContext = await zoomSdk.getUserContext();
+
+    await zoomSdk.setVideoMirrorEffect({
+      mirrorMyVideo: false,
+    });
+
     setUserContext(userContext);
     setParticipants(participants);
     setRunningContext(context);
@@ -89,6 +94,7 @@ const App: React.FC = () => {
           'postMessage',
           'runRenderingContext',
           'sendAppInvitationToAllParticipants',
+          'setVideoMirrorEffect',
           'getVideoState',
           // events
           'onConnect',
