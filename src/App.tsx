@@ -4,7 +4,7 @@ import zoomSdk, {
   Participant,
   GetUserContextResponse,
 } from '@zoom/appssdk';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import './App.css';
 
 const App: React.FC = () => {
@@ -49,15 +49,17 @@ const App: React.FC = () => {
       zIndex: 5,
     });
 
+    console.log('drawWebview::camera => ', response);
+  }, [runRenderingContext, config]);
+
+  const showNotification = useCallback(async () => {
     await zoomSdk.showNotification({
       // @ts-expect-error error in type-matching
       title: 'Zoom SDK Notification',
       type: 'info',
       message: 'Would you like to join AI Companion?',
     });
-
-    console.log('drawWebview::camera => ', response);
-  }, [runRenderingContext, config]);
+  }, []);
 
   useEffect(() => {
     if (config) return;
@@ -128,20 +130,27 @@ const App: React.FC = () => {
     }
   }, [config, renderWebView]);
 
+  const currentParticipantNameTag = useMemo(() => {
+    return (
+      runningContext === 'inCamera' &&
+      userContext?.screenName && (
+        <div className="glass">
+          <span className="name-tag">{userContext?.screenName}</span>
+        </div>
+      )
+    );
+  }, [runningContext, userContext]);
+
   return (
     <>
       {runningContext === 'inMeeting' && (
         <>
-          <p className="read-the-docs">Zoom AI Notification</p>
+          <p className="read-the-docs" onClick={showNotification}>Zoom AI Notification</p>
           <button onClick={renderWebView}>Render</button>
           <button onClick={closeRenderingContext}>Clear</button>
         </>
       )}
-      {runningContext === 'inCamera' && (
-        <div className="glass">
-          <span className="name-tag">{userContext?.screenName}</span>
-        </div>
-      )}
+      {currentParticipantNameTag}
     </>
   );
 };
