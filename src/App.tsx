@@ -26,10 +26,7 @@ const App: React.FC = () => {
   }, []);
 
   const runRenderingContext = useCallback(async () => {
-    // const { meetingUUID } = await zoomSdk.getMeetingUUID();
     const userContext = await zoomSdk.getUserContext();
-    // console.log('meetingUUID => ', meetingUUID);
-    // await closeRenderingContext();
     const response = await zoomSdk.runRenderingContext({
       view: 'camera',
     });
@@ -38,7 +35,6 @@ const App: React.FC = () => {
     console.log('runRenderingContext::camera => ', response);
 
     setUserContext(userContext);
-
   }, []);
 
   const drawWebview = useCallback(async () => {
@@ -119,7 +115,7 @@ const App: React.FC = () => {
       )}
       {runningContext === 'inCamera' && (
         <div className="glass">
-          <span className="name-tag">{userContext?.screenName}</span>
+          <span className="name-tag">{userContext?.screenName}</span>  
         </div>
       )}
     </>
