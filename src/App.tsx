@@ -1,7 +1,7 @@
 import zoomSdk, {
   ConfigResponse,
   RunningContext,
-  Participant,
+  // Participant,
   GetUserContextResponse,
 } from '@zoom/appssdk';
 import { useEffect, useState, useCallback } from 'react';
@@ -10,12 +10,12 @@ import './App.css';
 const App: React.FC = () => {
   const [config, setConfig] = useState<ConfigResponse>();
   const [runningContext, setRunningContext] = useState<RunningContext>();
-  const [participants, setParticipants] = useState<Participant[]>([]);
+  // const [participants, setParticipants] = useState<Participant[]>([]);
   const [userContext, setUserContext] = useState<GetUserContextResponse>();
 
   const init = useCallback(async () => {
     const { context } = await zoomSdk.getRunningContext();
-    const { participants } = await zoomSdk.getMeetingParticipants();
+    // const { participants } = await zoomSdk.getMeetingParticipants();
     const userContext = await zoomSdk.getUserContext();
 
     await zoomSdk.setVideoMirrorEffect({
@@ -23,7 +23,7 @@ const App: React.FC = () => {
     });
 
     setUserContext(userContext);
-    setParticipants(participants);
+    // setParticipants(participants);
     setRunningContext(context);
   }, []);
 
@@ -115,11 +115,9 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (config) console.log('config => ', config);
-    if (participants.length !== 0)
-      console.log('participants => ', participants);
     if (runningContext) console.log('runningContext => ', runningContext);
     if (userContext) console.log('userContext => ', userContext);
-  }, [config, participants, runningContext, userContext]);
+  }, [config, runningContext, userContext]);
 
   return (
     <>
