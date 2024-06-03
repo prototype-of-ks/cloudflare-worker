@@ -121,7 +121,7 @@ const App: React.FC = () => {
 
   return (
     <>
-      {runningContext !== 'inMeeting' && (
+      {runningContext === 'inMeeting' && (
         <>
           <a className="read-the-docs" onClick={showNotification}>
             Zoom AI Notification
@@ -132,7 +132,7 @@ const App: React.FC = () => {
           </div>
         </>
       )}
-      {runningContext !== 'inCamera' && (
+      {runningContext === 'inCamera' && (
         <div className="card">
           <div className="gradient-background font-style user-context-wrapper">
             <div className="user-name">{userContext?.screenName}</div>
