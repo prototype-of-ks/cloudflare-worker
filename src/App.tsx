@@ -130,7 +130,7 @@ const App: React.FC = () => {
           <button onClick={closeRenderingContext}>Clear</button>
         </>
       )}
-      {runningContext !== 'inCamera' && (
+      {runningContext === 'inCamera' && (
         <div className="card">
           <div className="gradient-background font-style user-context-wrapper">
             <div className="user-name">{userContext?.screenName}</div>
