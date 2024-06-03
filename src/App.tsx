@@ -4,7 +4,7 @@ import zoomSdk, {
   Participant,
   GetUserContextResponse,
 } from '@zoom/appssdk';
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import './App.css';
 
 const App: React.FC = () => {
@@ -109,6 +109,10 @@ const App: React.FC = () => {
   }, [config, participants, runningContext, userContext]);
 
   useEffect(() => {
+    renderWebView();
+  }, [userContext, renderWebView]);
+
+  useEffect(() => {
     if (config) {
       zoomSdk.onMyMediaChange(async (media) => {
         if ('video' in media.media) {
@@ -130,17 +134,6 @@ const App: React.FC = () => {
     }
   }, [config, renderWebView]);
 
-  const currentParticipantNameTag = useMemo(() => {
-    return (
-      runningContext === 'inCamera' &&
-      userContext?.screenName && (
-        <div className="glass">
-          <span className="name-tag">{userContext?.screenName}</span>
-        </div>
-      )
-    );
-  }, [runningContext, userContext]);
-
   return (
     <>
       {runningContext === 'inMeeting' && (
@@ -150,7 +143,11 @@ const App: React.FC = () => {
           <button onClick={closeRenderingContext}>Clear</button>
         </>
       )}
-      {currentParticipantNameTag}
+      {runningContext === 'inCamera' && (
+        <div className="glass">
+          <span className="name-tag">{userContext?.screenName}</span>
+        </div>
+      )}
     </>
   );
 };
