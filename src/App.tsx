@@ -16,7 +16,8 @@ const App: React.FC = () => {
   const init = useCallback(async () => {
     const { context } = await zoomSdk.getRunningContext();
     const { participants } = await zoomSdk.getMeetingParticipants();
-
+    const userContext = await zoomSdk.getUserContext();
+    setUserContext(userContext);
     setParticipants(participants);
     setRunningContext(context);
   }, []);
@@ -26,31 +27,37 @@ const App: React.FC = () => {
   }, []);
 
   const runRenderingContext = useCallback(async () => {
-    const userContext = await zoomSdk.getUserContext();
     const response = await zoomSdk.runRenderingContext({
       view: 'camera',
     });
 
-    console.log('userContext => ', userContext);
     console.log('runRenderingContext::camera => ', response);
-
-    setUserContext(userContext);
   }, []);
 
   const renderWebView = useCallback(async () => {
-    await runRenderingContext();
+    if (userContext) {
+      await runRenderingContext();
 
-    const response = await zoomSdk.drawWebView({
-      webviewId: 'MyCamera',
-      x: 0,
-      y: 0,
-      width: config?.media?.renderTarget?.width,
-      height: config?.media?.renderTarget?.height,
-      zIndex: 5,
-    });
+      const response = await zoomSdk.drawWebView({
+        webviewId: 'MyCamera',
+        x: 0,
+        y: 0,
+        width: config?.media?.renderTarget?.width,
+        height: config?.media?.renderTarget?.height,
+        zIndex: 5,
+      });
 
-    console.log('drawWebview::camera => ', response);
-  }, [runRenderingContext, config]);
+      console.log('drawWebview::userContext => ', userContext);
+      console.log('drawWebview::camera => ', response);
+    } else {
+      console.log('No userContext found. Will not render WebView.');
+    }
+  }, [
+    runRenderingContext,
+    config?.media?.renderTarget?.width,
+    config?.media?.renderTarget?.height,
+    userContext,
+  ]);
 
   const showNotification = useCallback(async () => {
     await zoomSdk.showNotification({
@@ -108,37 +115,35 @@ const App: React.FC = () => {
     if (userContext) console.log('userContext => ', userContext);
   }, [config, participants, runningContext, userContext]);
 
-  useEffect(() => {
-    renderWebView();
-  }, [userContext, renderWebView]);
+  // useEffect(() => {
+  //   if (config) {
+  //     zoomSdk.onMyMediaChange(async (media) => {
+  //       if ('video' in media.media) {
+  //         // VideoMedia
+  //         if (media.media.video?.state) {
+  //           await renderWebView();
+  //         }
+  //       }
+  //     });
 
-  useEffect(() => {
-    if (config) {
-      zoomSdk.onMyMediaChange(async (media) => {
-        if ('video' in media.media) {
-          // VideoMedia
-          if (media.media.video?.state) {
-            await renderWebView();
-          }
-        }
-      });
-
-      zoomSdk
-        .getVideoState()
-        .then((state) => {
-          if (state.video) {
-            renderWebView();
-          }
-        })
-        .catch();
-    }
-  }, [config, renderWebView]);
+  //     zoomSdk
+  //       .getVideoState()
+  //       .then((state) => {
+  //         if (state.video) {
+  //           renderWebView();
+  //         }
+  //       })
+  //       .catch();
+  //   }
+  // }, [config, renderWebView]);
 
   return (
     <>
       {runningContext === 'inMeeting' && (
         <>
-          <p className="read-the-docs" onClick={showNotification}>Zoom AI Notification</p>
+          <p className="read-the-docs" onClick={showNotification}>
+            Zoom AI Notification
+          </p>
           <button onClick={renderWebView}>Render</button>
           <button onClick={closeRenderingContext}>Clear</button>
         </>
