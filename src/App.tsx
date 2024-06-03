@@ -44,10 +44,8 @@ const App: React.FC = () => {
       webviewId: 'MyCamera',
       x: 0,
       y: 0,
-      // width: config?.media?.renderTarget?.width,
-      width: 1280,
-      height: 720,
-      // height: config?.media?.renderTarget?.height,
+      width: config?.media?.renderTarget?.width,
+      height: config?.media?.renderTarget?.height,
       zIndex: 5,
     });
 
@@ -59,7 +57,7 @@ const App: React.FC = () => {
     });
 
     console.log('drawWebview::camera => ', response);
-  }, [runRenderingContext]);
+  }, [runRenderingContext, config]);
 
   useEffect(() => {
     if (config) return;
@@ -141,7 +139,7 @@ const App: React.FC = () => {
       )}
       {runningContext === 'inCamera' && (
         <div className="glass">
-          <span className="name-tag">userContext?.screenName</span>
+          <span className="name-tag">{userContext?.screenName}</span>
         </div>
       )}
     </>
