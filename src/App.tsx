@@ -121,28 +121,6 @@ const App: React.FC = () => {
     if (userContext) console.log('userContext => ', userContext);
   }, [config, participants, runningContext, userContext]);
 
-  // useEffect(() => {
-  //   if (config) {
-  //     zoomSdk.onMyMediaChange(async (media) => {
-  //       if ('video' in media.media) {
-  //         // VideoMedia
-  //         if (media.media.video?.state) {
-  //           await renderWebView();
-  //         }
-  //       }
-  //     });
-
-  //     zoomSdk
-  //       .getVideoState()
-  //       .then((state) => {
-  //         if (state.video) {
-  //           renderWebView();
-  //         }
-  //       })
-  //       .catch();
-  //   }
-  // }, [config, renderWebView]);
-
   return (
     <>
       {runningContext === 'inMeeting' && (
@@ -155,8 +133,37 @@ const App: React.FC = () => {
         </>
       )}
       {runningContext === 'inCamera' && (
-        <div className="glass">
-          <span className="name-tag">{userContext?.screenName}</span>
+        <div className="card">
+          <div className="gradient-background font-style user-context-wrapper">
+            <div className="user-name">{userContext?.screenName}</div>
+            <div className="user-role">
+              <span>Manager, Release Engineer 2 </span>
+              <span className="separator">|</span>
+              <span>{userContext?.role}</span>
+            </div>
+            <div className="additional-context-wrapper">
+              <span className="context-section">
+                {/* <FontAwesomeIcon icon="bullhorn" fontSize={16} /> */}
+                <span>📢</span>
+                <span>Speaking</span>
+              </span>
+              <span className="context-section">
+                {/* <FontAwesomeIcon icon="robot" fontSize={16} /> */}
+                <span>🤖</span>
+                <span>AI Companion</span>
+              </span>
+              <span className="context-section">
+                {/* <FontAwesomeIcon icon="record-vinyl" fontSize={16} /> */}
+                <span>🎥</span>
+                <span>Recording</span>
+              </span>
+              <span className="context-section">
+                {/* <FontAwesomeIcon icon="location-arrow" fontSize={16} /> */}
+                <span>📍</span>
+                <span>Shanghai</span>
+              </span>
+            </div>
+          </div>
         </div>
       )}
     </>

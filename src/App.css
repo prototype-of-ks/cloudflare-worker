@@ -21,7 +21,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  top: 40%;
+  bottom: 20%;
   left: 0;
   width: 30%;
   height: 64px;
@@ -34,8 +34,91 @@
   text-align: center;
 }
 
+.gradient-background-blur {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
+  filter: blur(20px);
+}
+
 .name-tag {
   font-size: 1.5rem;
   font-weight: bold;
   color: black;
+}
+
+.card {
+  position: absolute;
+  width: 100%;
+  background-size: cover;
+  border-radius: 10px;
+  overflow: hidden;
+  left: 0;
+  bottom: 0;
+}
+
+.gradient-background {
+  width: 100%;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 16px;
+}
+
+.user-context-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 16px;
+
+  .user-name {
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  .user-role {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .position {
+    font-size: 16px;
+    font-weight: normal;
+  }
+
+  .additional-context-wrapper {
+    font-size: 14px;
+    font-weight: normal;
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+    gap: 8px;
+  }
+
+  .context-section {
+    display: flex;
+    gap: 4px;
+  }
+
+  .other-info img,
+  .other-info .icon {
+    margin-right: 8px; /* 图标和文本之间的间距 */
+  }
+}
+
+.font-style {
+  font-family: 'Roboto', sans-serif;
+  color: white;
+}
+
+
+.separator {
+  margin: 0 5px; /* Adjust spacing as needed */
 }
