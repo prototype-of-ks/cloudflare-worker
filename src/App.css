@@ -16,6 +16,11 @@
   cursor: pointer;
 }
 
+.action-group {
+  display: flex;
+  gap: 8px;
+}
+
 .glass {
   position: absolute;
   display: flex;

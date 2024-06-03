@@ -121,16 +121,18 @@ const App: React.FC = () => {
 
   return (
     <>
-      {runningContext === 'inMeeting' && (
+      {runningContext !== 'inMeeting' && (
         <>
-          <p className="read-the-docs" onClick={showNotification}>
+          <a className="read-the-docs" onClick={showNotification}>
             Zoom AI Notification
-          </p>
-          <button onClick={renderWebView}>Render</button>
-          <button onClick={closeRenderingContext}>Clear</button>
+          </a>
+          <div className="action-group">
+            <button onClick={renderWebView}>Render</button>
+            <button onClick={closeRenderingContext}>Clear</button>
+          </div>
         </>
       )}
-      {runningContext === 'inCamera' && (
+      {runningContext !== 'inCamera' && (
         <div className="card">
           <div className="gradient-background font-style user-context-wrapper">
             <div className="user-name">{userContext?.screenName}</div>
