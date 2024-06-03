@@ -37,27 +37,29 @@ const App: React.FC = () => {
     setUserContext(userContext);
   }, []);
 
-  const drawWebview = useCallback(async () => {
+  const renderWebView = useCallback(async () => {
     await runRenderingContext();
 
     const response = await zoomSdk.drawWebView({
-      webviewId: 'camera',
+      webviewId: 'MyCamera',
       x: 0,
       y: 0,
-      width: config?.media?.renderTarget?.width,
-      height: config?.media?.renderTarget?.height,
-      zIndex: 9,
+      // width: config?.media?.renderTarget?.width,
+      width: 1280,
+      height: 720,
+      // height: config?.media?.renderTarget?.height,
+      zIndex: 5,
     });
 
     await zoomSdk.showNotification({
-      // @ts-expect-error 111
+      // @ts-expect-error error in type-matching
       title: 'Zoom SDK Notification',
-      type: 'info',       
-      message: 'Would you like to join AI Companion?'
+      type: 'info',
+      message: 'Would you like to join AI Companion?',
     });
 
     console.log('drawWebview::camera => ', response);
-  }, [runRenderingContext, config]);
+  }, [runRenderingContext]);
 
   useEffect(() => {
     if (config) return;
@@ -77,14 +79,16 @@ const App: React.FC = () => {
           'getMeetingUUID',
           'getRunningContext',
           'getUserContext',
+          'postMessage',
+          'runRenderingContext',
+          'sendAppInvitationToAllParticipants',
+          'getVideoState',
+          // events
           'onConnect',
           'onMeeting',
           'onMessage',
           'onMyMediaChange',
           'onParticipantChange',
-          'postMessage',
-          'runRenderingContext',
-          'sendAppInvitationToAllParticipants',
         ],
       });
       setConfig(config);
@@ -104,18 +108,40 @@ const App: React.FC = () => {
     if (userContext) console.log('userContext => ', userContext);
   }, [config, participants, runningContext, userContext]);
 
+  useEffect(() => {
+    if (config) {
+      zoomSdk.onMyMediaChange(async (media) => {
+        if ('video' in media.media) {
+          // VideoMedia
+          if (media.media.video?.state) {
+            await renderWebView();
+          }
+        }
+      });
+
+      zoomSdk
+        .getVideoState()
+        .then((state) => {
+          if (state.video) {
+            renderWebView();
+          }
+        })
+        .catch();
+    }
+  }, [config, renderWebView]);
+
   return (
     <>
       {runningContext === 'inMeeting' && (
         <>
           <p className="read-the-docs">Zoom AI Notification</p>
-          <button onClick={drawWebview}>Draw Webview</button>
-          <button onClick={closeRenderingContext}>Close Webview</button>
+          <button onClick={renderWebView}>Render</button>
+          <button onClick={closeRenderingContext}>Clear</button>
         </>
       )}
       {runningContext === 'inCamera' && (
         <div className="glass">
-          <span className="name-tag">{userContext?.screenName}</span>  
+          <span className="name-tag">userContext?.screenName</span>
         </div>
       )}
     </>

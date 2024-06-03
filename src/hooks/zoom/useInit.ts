@@ -40,7 +40,7 @@ export function useInit() {
           'sendAppInvitationToAllParticipants',
           'drawWebView',
           'onRunningContextChange',
-          //   @ts-expect-error Property 'onRenderedAppOpened' does not exist on type 'Capabilities'.
+          // @ts-expect-error Property 'onRenderedAppOpened' does not exist on type 'Capabilities'.
           'onRenderedAppOpened',
           'getUserContext',
           'setVideoMirrorEffect',
