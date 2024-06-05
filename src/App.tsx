@@ -4,9 +4,13 @@ import zoomSdk, {
   GetUserContextResponse,
 } from '@zoom/appssdk';
 import { useEffect, useState, useCallback } from 'react';
+import { useDev } from './hooks/useDev';
 import './App.css';
+import { useTimezone } from './hooks/useTimezone';
 
 const App: React.FC = () => {
+  const { localTime } = useTimezone();
+  const { isDev } = useDev();
   const [config, setConfig] = useState<ConfigResponse>();
   const [runningContext, setRunningContext] = useState<RunningContext>();
   const [userContext, setUserContext] = useState<GetUserContextResponse>();
@@ -74,6 +78,10 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (isDev) {
+      console.warn('The Zoom Apps SDK is not supported in Dev mode');
+      return;
+    }
     if (config) return;
     (async () => {
       const config = await zoomSdk.config({
@@ -111,7 +119,7 @@ const App: React.FC = () => {
 
       console.log('context => ', context);
     })();
-  }, [config, init]);
+  }, [isDev, config, init]);
 
   useEffect(() => {
     if (config) console.log('config => ', config);
@@ -132,14 +140,15 @@ const App: React.FC = () => {
           </div>
         </>
       )}
-      {runningContext === 'inCamera' && (
+      {(runningContext === 'inCamera' || isDev) && (
         <div className="card">
           <div className="gradient-background font-style user-context-wrapper">
             <div className="user-name">{userContext?.screenName}</div>
             <div className="user-role">
-              <span>Manager, Release Engineer 2 </span>
+              <span>{userContext?.role || 'host'}</span>
               <span className="separator">|</span>
-              <span>{userContext?.role}</span>
+              {/* <span>{userContext?.role}</span> */}
+              <span>Manager, Release Engineer 2 </span>
             </div>
             <div className="additional-context-wrapper">
               <span className="context-section">
@@ -160,7 +169,7 @@ const App: React.FC = () => {
               <span className="context-section">
                 {/* <FontAwesomeIcon icon="location-arrow" fontSize={16} /> */}
                 <span>📍</span>
-                <span>Shanghai</span>
+                <span>{localTime}</span>
               </span>
             </div>
           </div>
