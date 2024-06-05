@@ -1,5 +1,5 @@
 https://cloudflare-worker-91t.pages.dev/*
-  Content-Security-Policy: default-src 'self' static.cloudflareinsights.com; script-src 'self' cloudflare-worker-91t.pages.dev static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:;
+  Content-Security-Policy: default-src 'self' static.cloudflareinsights.com 'unsafe-inline'; script-src 'self' cloudflare-worker-91t.pages.dev static.cloudflareinsights.com 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
