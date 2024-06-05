@@ -31,6 +31,15 @@ const App: React.FC = () => {
     setRunningContext(context);
   }, []);
 
+  const getRemoteIP = useCallback(async () => {
+    try {
+      const response = await (await fetch('/api/v1/getRemoteIP')).json();
+      console.log('Remote IP: ', response);
+    } catch (e) {
+      console.error('Failing in getting remote IP: ', e);
+    }
+  }, []);
+
   const closeRenderingContext = useCallback(async () => {
     await zoomSdk.closeRenderingContext();
   }, []);
@@ -126,6 +135,10 @@ const App: React.FC = () => {
     if (runningContext) console.log('runningContext => ', runningContext);
     if (userContext) console.log('userContext => ', userContext);
   }, [config, runningContext, userContext]);
+
+  useEffect(() => {
+    getRemoteIP();
+  }, [getRemoteIP]);
 
   return (
     <>
