@@ -2,7 +2,6 @@ import zoomSdk, {
   ConfigResponse,
   RunningContext,
   GetUserContextResponse,
-  OnMyMediaChangeEvent,
 } from '@zoom/appssdk';
 import { useEffect, useState, useCallback } from 'react';
 import { useDev } from './hooks/useDev';
@@ -37,38 +36,24 @@ const App: React.FC = () => {
   const [runningContext, setRunningContext] = useState<RunningContext>();
   const [userContext, setUserContext] = useState<GetUserContextResponse>();
   const { onWaitingRoomParticipantJoinEvent } = useZoomEvent(config);
-  const [onMediaChangEvent] = useState<OnMyMediaChangeEvent>();
-  const [hasRunningContext, setHasRunningContext] = useState(false);
 
   const init = useCallback(async () => {
     const { context } = await zoomSdk.getRunningContext();
     const userContext = await zoomSdk.getUserContext();
-
-    try {
-      await zoomSdk.setVideoMirrorEffect({
-        mirrorMyVideo: false,
-      });
-    } catch (e) {
-      console.error('Error setting mirror effect: ', e);
-    }
 
     setUserContext(userContext);
     setRunningContext(context);
   }, []);
 
   const closeRenderingContext = useCallback(async () => {
-    if (hasRunningContext) {
-      await zoomSdk.closeRenderingContext();
-      setHasRunningContext(false);
-    }
-  }, [hasRunningContext]);
+    zoomSdk.closeRenderingContext().catch(console.error);
+  }, []);
 
   const renderCameraModeWebview = useCallback(async () => {
     if (userContext) {
       const runRenderingContextResponse = await zoomSdk.runRenderingContext({
         view: 'camera',
       });
-      setHasRunningContext(true);
       console.log(
         'runRenderingContext::camera => ',
         runRenderingContextResponse
@@ -93,23 +78,16 @@ const App: React.FC = () => {
     } else {
       console.log('No userContext found. Will not render WebView.');
     }
-  }, [
-    config?.media?.renderTarget?.width,
-    config?.media?.renderTarget?.height,
-    userContext,
-  ]);
+  }, [userContext, config]);
 
   const renderImmersiveModeWebview = useCallback(async () => {
-    try {
-      const response = await zoomSdk.runRenderingContext({
+    zoomSdk
+      .runRenderingContext({
         view: 'immersive',
-      });
-      setHasRunningContext(true);
-
-      console.log('renderImmersiveApp::Immersive => ', response);
-    } catch (e) {
-      console.log(e);
-    }
+      })
+      .catch((e) =>
+        console.error('runRenderingContext::immersive::error => ', e)
+      );
   }, []);
 
   const showZoomClientNotification = useCallback(async () => {
@@ -208,15 +186,7 @@ const App: React.FC = () => {
         'onWaitingRoomParticipantJoinEvent => ',
         onWaitingRoomParticipantJoinEvent
       );
-    if (onMediaChangEvent)
-      console.log('onMediaChangEvent => ', onMediaChangEvent);
-  }, [
-    config,
-    runningContext,
-    userContext,
-    onWaitingRoomParticipantJoinEvent,
-    onMediaChangEvent,
-  ]);
+  }, [config, runningContext, userContext, onWaitingRoomParticipantJoinEvent]);
 
   return (
     <>
