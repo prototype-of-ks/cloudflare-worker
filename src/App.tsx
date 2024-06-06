@@ -65,7 +65,6 @@ const App: React.FC = () => {
 
   const renderCameraModeWebview = useCallback(async () => {
     if (userContext) {
-      await closeRenderingContext();
       const runRenderingContextResponse = await zoomSdk.runRenderingContext({
         view: 'camera',
       });
@@ -75,16 +74,16 @@ const App: React.FC = () => {
         runRenderingContextResponse
       );
 
-      zoomSdk
-        .drawParticipant({
-          participantUUID: userContext.participantUUID,
-          x: 0,
-          y: 0,
-          width: config?.media?.renderTarget?.width || 0,
-          height: config?.media?.renderTarget?.height || 0,
-          zIndex: 2,
-        })
-        .catch((e) => console.error('drawParticipant::error => ', e));
+      // zoomSdk
+      //   .drawParticipant({
+      //     participantUUID: userContext.participantUUID,
+      //     x: 0,
+      //     y: 0,
+      //     width: config?.media?.renderTarget?.width || 0,
+      //     height: config?.media?.renderTarget?.height || 0,
+      //     zIndex: 2,
+      //   })
+      //   .catch((e) => console.error('drawParticipant::error => ', e));
 
       zoomSdk
         .drawWebView({
@@ -98,17 +97,17 @@ const App: React.FC = () => {
         .then((_) => console.log(_))
         .catch((e) => console.error('drawWebView::error => ', e));
 
-      zoomSdk
-        .drawWebView({
-          webviewId: 'real-time-ai-companion',
-          x: (config?.media?.renderTarget?.width || 0) - 300,
-          y: 0,
-          width: 300,
-          height: 240,
-          zIndex: 9,
-        })
-        .then((_) => console.log(_))
-        .catch((e) => console.error('drawWebView::error => ', e));
+      // zoomSdk
+      //   .drawWebView({
+      //     webviewId: 'real-time-ai-companion',
+      //     x: (config?.media?.renderTarget?.width || 0) - 300,
+      //     y: 0,
+      //     width: 300,
+      //     height: 240,
+      //     zIndex: 9,
+      //   })
+      //   .then((_) => console.log(_))
+      //   .catch((e) => console.error('drawWebView::error => ', e));
 
       console.log('drawWebview::userContext => ', userContext);
     } else {
@@ -118,7 +117,6 @@ const App: React.FC = () => {
     config?.media?.renderTarget?.width,
     config?.media?.renderTarget?.height,
     userContext,
-    closeRenderingContext,
   ]);
 
   const renderImmersiveModeWebview = useCallback(async () => {
@@ -192,6 +190,8 @@ const App: React.FC = () => {
           'onMyMediaChange',
           'onParticipantChange',
           'onWaitingRoomParticipantJoin',
+          'getChatContext',
+          'getEmojiConfiguration',
         ],
       });
       setConfig(config);
@@ -333,6 +333,7 @@ const App: React.FC = () => {
           </div>
         </>
       )}
+      <p>Text for webview testing</p>
       <Toaster />
     </>
   );
