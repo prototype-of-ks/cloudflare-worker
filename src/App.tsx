@@ -64,18 +64,17 @@ const App: React.FC = () => {
     }
   }, [hasRunningContext]);
 
-  const runRenderingContext = useCallback(async () => {
-    const response = await zoomSdk.runRenderingContext({
-      view: 'camera',
-    });
-    setHasRunningContext(true);
-    console.log('runRenderingContext::camera => ', response);
-  }, []);
-
   const renderCameraModeWebview = useCallback(async () => {
     if (userContext) {
       await closeRenderingContext();
-      await runRenderingContext();
+      const runRenderingContextResponse = await zoomSdk.runRenderingContext({
+        view: 'camera',
+      });
+      setHasRunningContext(true);
+      console.log(
+        'runRenderingContext::camera => ',
+        runRenderingContextResponse
+      );
 
       const response = await zoomSdk.drawWebView({
         webviewId: 'MyCamera',
@@ -92,11 +91,10 @@ const App: React.FC = () => {
       console.log('No userContext found. Will not render WebView.');
     }
   }, [
-    runRenderingContext,
     config?.media?.renderTarget?.width,
     config?.media?.renderTarget?.height,
     userContext,
-    closeRenderingContext
+    closeRenderingContext,
   ]);
 
   const renderImmersiveModeWebview = useCallback(async () => {
@@ -229,7 +227,10 @@ const App: React.FC = () => {
                 <CardDescription>Draw Webview in Camera Mode</CardDescription>
               </CardHeader>
               <CardFooter className="flex justify-between">
-                <Button variant="outline" onClick={closeRenderingContext}>
+                <Button variant="outline" onClick={async () => {
+                  await zoomSdk.clearWebView();
+                  await closeRenderingContext();
+                }}>
                   Clear
                 </Button>
                 <Button onClick={renderCameraModeWebview}>Render</Button>
