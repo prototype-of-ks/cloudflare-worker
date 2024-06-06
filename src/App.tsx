@@ -21,14 +21,14 @@ import { useZoomEvent } from './hooks/useZoomEvent';
 import { toast } from 'sonner';
 import { Toaster } from '@/components/ui/sonner';
 
-type Media = {
-  audio?: {
-    state?: boolean;
-  };
-  video?: {
-    state?: boolean;
-  };
-};
+// type Media = {
+//   audio?: {
+//     state?: boolean;
+//   };
+//   video?: {
+//     state?: boolean;
+//   };
+// };
 
 const App: React.FC = () => {
   const { localTime, timeZone } = useTimezone();
@@ -75,6 +75,15 @@ const App: React.FC = () => {
         'runRenderingContext::camera => ',
         runRenderingContextResponse
       );
+
+      zoomSdk.drawParticipant({
+        participantUUID: userContext.participantUUID,
+        x: 0,
+        y: 0,
+        width: (config?.media?.renderTarget?.width || 0) - 300,
+        height: (config?.media?.renderTarget?.height || 0) - 400,
+        zIndex: 2,
+      }).catch(e => console.error('drawParticipant::error => ', e))
 
       const response = await zoomSdk.drawWebView({
         webviewId: 'MyCamera',
@@ -179,22 +188,22 @@ const App: React.FC = () => {
     })();
   }, [isDev, config, init]);
 
-  useEffect(() => {
-    if (!config) {
-      console.warn('No config provided.');
-      return;
-    }
+  // useEffect(() => {
+  //   if (!config) {
+  //     console.warn('No config provided.');
+  //     return;
+  //   }
 
-    zoomSdk.onMyMediaChange(async (event) => {
-      setOnMediaChangeEvent(event);
-      const media = event.media as Media;
-      if (media.video?.state) {
-        // await renderCameraModeWebview();
-      } else {
-        // await closeRenderingContext();
-      }
-    });
-  }, [config, renderCameraModeWebview, closeRenderingContext]);
+  //   zoomSdk.onMyMediaChange(async (event) => {
+  //     setOnMediaChangeEvent(event);
+  //     const media = event.media as Media;
+  //     if (media.video?.state) {
+  //       // await renderCameraModeWebview();
+  //     } else {
+  //       // await closeRenderingContext();
+  //     }
+  //   });
+  // }, [config, renderCameraModeWebview, closeRenderingContext]);
 
   useEffect(() => {
     if (config) console.log('config => ', config);
@@ -227,10 +236,13 @@ const App: React.FC = () => {
                 <CardDescription>Draw Webview in Camera Mode</CardDescription>
               </CardHeader>
               <CardFooter className="flex justify-between">
-                <Button variant="outline" onClick={async () => {
-                  await zoomSdk.clearWebView();
-                  await closeRenderingContext();
-                }}>
+                <Button
+                  variant="outline"
+                  onClick={async () => {
+                    await zoomSdk.clearWebView();
+                    await closeRenderingContext();
+                  }}
+                >
                   Clear
                 </Button>
                 <Button onClick={renderCameraModeWebview}>Render</Button>
@@ -274,34 +286,39 @@ const App: React.FC = () => {
         userContext={userContext}
       />
       {(runningContext === 'inCamera' || isDev) && (
-        <div className="card">
-          <div className="gradient-background font-style user-context-wrapper">
-            <div className="user-name">{userContext?.screenName}</div>
-            <div className="user-role">
-              <span>{userContext?.role || 'N/A'}</span>
-              <span className="separator">|</span>
-              <span>Manager, Release Engineer 2 </span>
-            </div>
-            <div className="additional-context-wrapper">
-              <span className="context-section">
-                <span>📢</span>
-                <span>Speaking</span>
-              </span>
-              <span className="context-section">
-                <span>🤖</span>
-                <span>AI Companion</span>
-              </span>
-              <span className="context-section">
-                <span>📍</span>
-                <span>{timeZone}</span>
-              </span>
-              <span className="context-section">
-                <span>|</span>
-                <span>Joined at {localTime}</span>
-              </span>
+        <>
+          <div className="absolute bototm-0 right-0">
+
+          </div>
+          <div className="card">
+            <div className="gradient-background font-style user-context-wrapper">
+              <div className="user-name">{userContext?.screenName}</div>
+              <div className="user-role">
+                <span>{userContext?.role || 'N/A'}</span>
+                <span className="separator">|</span>
+                <span>Manager, Release Engineer 2 </span>
+              </div>
+              <div className="additional-context-wrapper">
+                <span className="context-section">
+                  <span>📢</span>
+                  <span>Speaking</span>
+                </span>
+                <span className="context-section">
+                  <span>🤖</span>
+                  <span>AI Companion</span>
+                </span>
+                <span className="context-section">
+                  <span>📍</span>
+                  <span>{timeZone}</span>
+                </span>
+                <span className="context-section">
+                  <span>|</span>
+                  <span>Joined at {localTime}</span>
+                </span>
+              </div>
             </div>
           </div>
-        </div>
+        </>
       )}
       <Toaster />
     </>
