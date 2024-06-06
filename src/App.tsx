@@ -2,6 +2,7 @@ import zoomSdk, {
   ConfigResponse,
   RunningContext,
   GetUserContextResponse,
+  OnMyMediaChangeEvent
 } from '@zoom/appssdk';
 import { useEffect, useState, useCallback } from 'react';
 import { useDev } from './hooks/useDev';
@@ -16,6 +17,18 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import './App.css';
+import { useZoomEvent } from './hooks/useZoomEvent';
+import { toast } from 'sonner';
+import { Toaster } from '@/components/ui/sonner';
+
+type Media = {
+  audio?: {
+    state?: boolean;
+  };
+  video?: {
+    state?: boolean;
+  };
+};
 
 const App: React.FC = () => {
   const { localTime, timeZone } = useTimezone();
@@ -23,6 +36,10 @@ const App: React.FC = () => {
   const [config, setConfig] = useState<ConfigResponse>();
   const [runningContext, setRunningContext] = useState<RunningContext>();
   const [userContext, setUserContext] = useState<GetUserContextResponse>();
+  const { onWaitingRoomParticipantJoinEvent } = useZoomEvent(config);
+  const [onMediaChangEvent, setOnMediaChangeEvent] =
+    useState<OnMyMediaChangeEvent>();
+  const [hasRunningContext, setHasRunningContext] = useState(false);
 
   const init = useCallback(async () => {
     const { context } = await zoomSdk.getRunningContext();
@@ -41,16 +58,19 @@ const App: React.FC = () => {
   }, []);
 
   const closeRenderingContext = useCallback(async () => {
-    await zoomSdk.closeRenderingContext();
-  }, []);
+    if (hasRunningContext) {
+      await zoomSdk.closeRenderingContext();
+      setHasRunningContext(false);
+    }
+  }, [hasRunningContext]);
 
   const runRenderingContext = useCallback(async () => {
+    await closeRenderingContext();
     const response = await zoomSdk.runRenderingContext({
       view: 'camera',
     });
-
     console.log('runRenderingContext::camera => ', response);
-  }, []);
+  }, [closeRenderingContext]);
 
   const renderCameraModeWebview = useCallback(async () => {
     if (userContext) {
@@ -79,23 +99,35 @@ const App: React.FC = () => {
 
   const renderImmersiveModeWebview = useCallback(async () => {
     try {
-      await closeRenderingContext();
-    } catch (e) {
-      console.error(e);
-    } finally {
+      await runRenderingContext();
       const response = await zoomSdk.runRenderingContext({
         view: 'immersive',
       });
       console.log('renderImmersiveApp::Immersive => ', response);
+    } catch (e) {
+      console.log(e);
     }
-  }, [closeRenderingContext]);
+  }, [runRenderingContext]);
 
-  const showNotification = useCallback(async () => {
+  const showZoomClientNotification = useCallback(async () => {
     await zoomSdk.showNotification({
       // @ts-expect-error error in type-matching
       title: 'Zoom SDK Notification',
       type: 'info',
       message: 'Would you like to join AI Companion?',
+    });
+  }, []);
+
+  const showZoomAppNotification = useCallback(async () => {
+    console.log('Zoom App Notification');
+    toast('Zoom App Notification', {
+      description: 'Would you like to join AI Companion?',
+      action: {
+        label: 'Undo',
+        onClick() {
+          console.log('Undo Zoom App Notification');
+        },
+      },
     });
   }, []);
 
@@ -144,10 +176,41 @@ const App: React.FC = () => {
   }, [isDev, config, init]);
 
   useEffect(() => {
+    if (!config) {
+      console.warn('No config provided.');
+      return;
+    }
+
+    zoomSdk.onMyMediaChange(async (event) => {
+      setOnMediaChangeEvent(event);
+      const media = event.media as Media;
+      if (media.video?.state) {
+        // console.log();
+        await renderCameraModeWebview();
+      } else {
+        await closeRenderingContext();
+      }
+    });
+  }, [config, closeRenderingContext]);
+
+  useEffect(() => {
     if (config) console.log('config => ', config);
     if (runningContext) console.log('runningContext => ', runningContext);
     if (userContext) console.log('userContext => ', userContext);
-  }, [config, runningContext, userContext]);
+    if (onWaitingRoomParticipantJoinEvent)
+      console.log(
+        'onWaitingRoomParticipantJoinEvent => ',
+        onWaitingRoomParticipantJoinEvent
+      );
+    if (onMediaChangEvent)
+      console.log('onMediaChangEvent => ', onMediaChangEvent);
+  }, [
+    config,
+    runningContext,
+    userContext,
+    onWaitingRoomParticipantJoinEvent,
+    onMediaChangEvent,
+  ]);
 
   return (
     <>
@@ -189,10 +252,12 @@ const App: React.FC = () => {
                 </CardDescription>
               </CardHeader>
               <CardFooter className="flex flex-col items-start gap-2">
-                <Button onClick={showNotification}>
+                <Button onClick={showZoomClientNotification}>
                   Show Notification in Zoom Client
                 </Button>
-                <Button>Show Notification in Zoom App</Button>
+                <Button onClick={showZoomAppNotification}>
+                  Show Notification in Zoom App
+                </Button>
               </CardFooter>
             </Card>
           </div>
@@ -207,34 +272,24 @@ const App: React.FC = () => {
           <div className="gradient-background font-style user-context-wrapper">
             <div className="user-name">{userContext?.screenName}</div>
             <div className="user-role">
-              <span>{userContext?.role || 'host'}</span>
+              <span>{userContext?.role || 'N/A'}</span>
               <span className="separator">|</span>
-              {/* <span>{userContext?.role}</span> */}
               <span>Manager, Release Engineer 2 </span>
             </div>
             <div className="additional-context-wrapper">
               <span className="context-section">
-                {/* <FontAwesomeIcon icon="bullhorn" fontSize={16} /> */}
                 <span>📢</span>
                 <span>Speaking</span>
               </span>
               <span className="context-section">
-                {/* <FontAwesomeIcon icon="robot" fontSize={16} /> */}
                 <span>🤖</span>
                 <span>AI Companion</span>
               </span>
-              {/* <FontAwesomeIcon icon="record-vinyl" fontSize={16} /> */}
-              {/* <span className="context-section">
-                <span>🎥</span>
-                <span>Recording</span>
-              </span> */}
               <span className="context-section">
-                {/* <FontAwesomeIcon icon="location-arrow" fontSize={16} /> */}
                 <span>📍</span>
                 <span>{timeZone}</span>
               </span>
               <span className="context-section">
-                {/* <FontAwesomeIcon icon="location-arrow" fontSize={16} /> */}
                 <span>|</span>
                 <span>Joined at {localTime}</span>
               </span>
@@ -242,6 +297,7 @@ const App: React.FC = () => {
           </div>
         </div>
       )}
+      <Toaster />
     </>
   );
 };
