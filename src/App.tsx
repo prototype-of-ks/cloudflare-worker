@@ -80,18 +80,18 @@ const App: React.FC = () => {
         participantUUID: userContext.participantUUID,
         x: 0,
         y: 0,
-        width: (config?.media?.renderTarget?.width || 0) - 300,
-        height: (config?.media?.renderTarget?.height || 0) - 400,
+        width: (config?.media?.renderTarget?.width || 0) * 0.8,
+        height: (config?.media?.renderTarget?.height || 0),
         zIndex: 2,
       }).catch(e => console.error('drawParticipant::error => ', e))
 
       const response = await zoomSdk.drawWebView({
-        webviewId: 'MyCamera',
+        webviewId: 'webview-id-1',
         x: 0,
         y: 0,
-        width: config?.media?.renderTarget?.width,
+        width: (config?.media?.renderTarget?.width || 0) * 0.8,
         height: config?.media?.renderTarget?.height,
-        zIndex: 5,
+        zIndex: 999,
       });
 
       console.log('drawWebview::userContext => ', userContext);
