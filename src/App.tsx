@@ -48,6 +48,19 @@ const App: React.FC = () => {
           .setVideoMirrorEffect({
             mirrorMyVideo: false,
           })
+          .then(async () => {
+            await zoomSdk.runRenderingContext({
+              view: 'camera'
+            });
+            await zoomSdk.drawWebView({
+              x: 0,
+              y: 0,
+              width: 1280,
+              height: 720,
+              zIndex: 99,
+              webviewId: 'webviewId'
+            });
+          })
           .catch((e) => console.error('setVideoMirrorEffect::error => ', e));
       })
       .catch(console.error);
@@ -67,7 +80,7 @@ const App: React.FC = () => {
     console.log('drawCameraContext => ', drawCameraContext);
 
     const drawWebviewResponse = await zoomSdk.drawWebView({
-      webviewId: 'MyCamera',
+      webviewId: 'camera',
       x: 0,
       y: 0,
       width: config?.media?.renderTarget?.width,
@@ -121,12 +134,10 @@ const App: React.FC = () => {
         capabilities: [
           'getRunningContext',
           'getAppContext',
-          'clearImage',
-          'clearParticipant',
+          // 'clearParticipant',
           'closeRenderingContext',
           'connect',
-          'drawImage',
-          'drawParticipant',
+          // 'drawParticipant',
           'drawWebView',
           'clearWebView',
           'getMeetingParticipants',
@@ -139,18 +150,11 @@ const App: React.FC = () => {
           'setVideoMirrorEffect',
           'getVideoState',
           'getMeetingLanguages',
-          'drawWebView',
-          'getImmersiveViewContext',
           // events
           'onConnect',
           'onMeeting',
           'onMessage',
-          'onMyMediaChange',
-          'onParticipantChange',
-          'onWaitingRoomParticipantJoin',
           'getChatContext',
-          'getEmojiConfiguration',
-          'admitParticipantFromWaitingRoom',
           'setVideoState',
         ],
       });
@@ -232,7 +236,7 @@ const App: React.FC = () => {
       />
       {(runningContext === 'inCamera' || isDev) && (
         <>
-          <div className="card !bg-black">
+          <div className="card">
             <div className="gradient-background font-style user-context-wrapper">
               <div className="user-name">{userContext?.screenName}</div>
               <div className="user-role">
