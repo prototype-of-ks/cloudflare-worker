@@ -65,12 +65,11 @@ const App: React.FC = () => {
   }, [hasRunningContext]);
 
   const runRenderingContext = useCallback(async () => {
-    await closeRenderingContext();
     const response = await zoomSdk.runRenderingContext({
       view: 'camera',
     });
     console.log('runRenderingContext::camera => ', response);
-  }, [closeRenderingContext]);
+  }, []);
 
   const renderCameraModeWebview = useCallback(async () => {
     if (userContext) {
@@ -187,11 +186,9 @@ const App: React.FC = () => {
       if (media.video?.state) {
         // console.log();
         await renderCameraModeWebview();
-      } else {
-        await closeRenderingContext();
       }
     });
-  }, [config, closeRenderingContext]);
+  }, [config, renderCameraModeWebview]);
 
   useEffect(() => {
     if (config) console.log('config => ', config);
