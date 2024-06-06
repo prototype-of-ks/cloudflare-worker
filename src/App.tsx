@@ -192,9 +192,11 @@ const App: React.FC = () => {
       const media = event.media as Media;
       if (media.video?.state) {
         await renderCameraModeWebview();
+      } else {
+        await closeRenderingContext();
       }
     });
-  }, [config, renderCameraModeWebview]);
+  }, [config, renderCameraModeWebview, closeRenderingContext]);
 
   useEffect(() => {
     if (config) console.log('config => ', config);
