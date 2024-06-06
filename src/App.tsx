@@ -74,7 +74,7 @@ const App: React.FC = () => {
 
   const renderCameraModeWebview = useCallback(async () => {
     if (userContext) {
-      await closeRenderingContext()
+      await closeRenderingContext();
       await runRenderingContext();
 
       const response = await zoomSdk.drawWebView({
@@ -162,12 +162,14 @@ const App: React.FC = () => {
           'sendAppInvitationToAllParticipants',
           'setVideoMirrorEffect',
           'getVideoState',
+          'getMeetingLanguages',
           // events
           'onConnect',
           'onMeeting',
           'onMessage',
           'onMyMediaChange',
           'onParticipantChange',
+          'onWaitingRoomParticipantJoin',
         ],
       });
       setConfig(config);
