@@ -74,17 +74,6 @@ const App: React.FC = () => {
         runRenderingContextResponse
       );
 
-      // zoomSdk
-      //   .drawParticipant({
-      //     participantUUID: userContext.participantUUID,
-      //     x: 0,
-      //     y: 0,
-      //     width: config?.media?.renderTarget?.width || 0,
-      //     height: config?.media?.renderTarget?.height || 0,
-      //     zIndex: 2,
-      //   })
-      //   .catch((e) => console.error('drawParticipant::error => ', e));
-
       zoomSdk
         .drawWebView({
           webviewId: 'webview-id-1',
@@ -96,18 +85,6 @@ const App: React.FC = () => {
         })
         .then((_) => console.log(_))
         .catch((e) => console.error('drawWebView::error => ', e));
-
-      // zoomSdk
-      //   .drawWebView({
-      //     webviewId: 'real-time-ai-companion',
-      //     x: (config?.media?.renderTarget?.width || 0) - 300,
-      //     y: 0,
-      //     width: 300,
-      //     height: 240,
-      //     zIndex: 9,
-      //   })
-      //   .then((_) => console.log(_))
-      //   .catch((e) => console.error('drawWebView::error => ', e));
 
       console.log('drawWebview::userContext => ', userContext);
     } else {
@@ -121,7 +98,6 @@ const App: React.FC = () => {
 
   const renderImmersiveModeWebview = useCallback(async () => {
     try {
-      await closeRenderingContext();
       const response = await zoomSdk.runRenderingContext({
         view: 'immersive',
       });
@@ -131,7 +107,7 @@ const App: React.FC = () => {
     } catch (e) {
       console.log(e);
     }
-  }, [closeRenderingContext]);
+  }, []);
 
   const showZoomClientNotification = useCallback(async () => {
     await zoomSdk.showNotification({
