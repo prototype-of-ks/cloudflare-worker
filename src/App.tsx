@@ -15,10 +15,10 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import './App.css';
 import { useZoomEvent } from './hooks/useZoomEvent';
 import { toast } from 'sonner';
 import { Toaster } from '@/components/ui/sonner';
+import './App.css';
 
 // type Media = {
 //   audio?: {
@@ -51,28 +51,26 @@ const App: React.FC = () => {
 
   const renderCameraModeWebview = useCallback(async () => {
     if (userContext) {
-      const runRenderingContextResponse = await zoomSdk.runRenderingContext({
-        view: 'camera',
-      });
-      console.log(
-        'runRenderingContext::camera => ',
-        runRenderingContextResponse
-      );
+      zoomSdk
+        .runRenderingContext({
+          view: 'camera',
+        })
+        .then((_) => console.log('runRenderingContext::camera => ', _))
+        .catch((e) =>
+          console.error('runRenderingContext::camera::error => ', e)
+        );
 
-      if (config?.media) {
-        console.log('renderTarget => ', config.media.renderTarget);
-        zoomSdk
-          .drawWebView({
-            webviewId: 'MyCameraWebview',
-            x: 0,
-            y: 0,
-            width: config?.media?.renderTarget?.width,
-            height: config?.media?.renderTarget?.height,
-            zIndex: 9,
-          })
-          .then((_) => console.log(_))
-          .catch((e) => console.error('drawWebView::error => ', e));
-      }
+      zoomSdk
+        .drawWebView({
+          webviewId: Math.random().toString(36).substring(7),
+          x: 0,
+          y: 0,
+          width: config?.media?.renderTarget?.width,
+          height: config?.media?.renderTarget?.height,
+          zIndex: 2,
+        })
+        .then((_) => console.log(_))
+        .catch((e) => console.error('drawWebView::error => ', e));
 
       console.log('drawWebview::userContext => ', userContext);
     } else {
@@ -248,6 +246,7 @@ const App: React.FC = () => {
               </CardFooter>
             </Card>
           </div>
+          <Toaster />
         </>
       )}
       <ImmersiveMode
@@ -256,7 +255,6 @@ const App: React.FC = () => {
       />
       {(runningContext === 'inCamera' || isDev) && (
         <>
-          <div className="absolute bototm-0 right-0"></div>
           <div className="card">
             <div className="gradient-background font-style user-context-wrapper">
               <div className="user-name">{userContext?.screenName}</div>
@@ -287,8 +285,6 @@ const App: React.FC = () => {
           </div>
         </>
       )}
-      <p>Text for webview testing</p>
-      <Toaster />
     </>
   );
 };

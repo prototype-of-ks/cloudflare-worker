@@ -26,8 +26,6 @@ const ImmersiveMode: React.FC<ImmersiveModeProps> = ({
   const { isDev } = useDev();
   const { timeZone, TimeNode } = useTimezone();
 
-
-
   return (
     (runningContext === 'inImmersive' || isDev) && (
       <div className="immersive-app-wrapper">
