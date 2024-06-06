@@ -98,7 +98,6 @@ const App: React.FC = () => {
 
   const renderImmersiveModeWebview = useCallback(async () => {
     try {
-      await runRenderingContext();
       const response = await zoomSdk.runRenderingContext({
         view: 'immersive',
       });
@@ -184,7 +183,6 @@ const App: React.FC = () => {
       setOnMediaChangeEvent(event);
       const media = event.media as Media;
       if (media.video?.state) {
-        // console.log();
         await renderCameraModeWebview();
       }
     });
