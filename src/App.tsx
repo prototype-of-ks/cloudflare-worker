@@ -74,7 +74,7 @@ const App: React.FC = () => {
 
   const renderCameraModeWebview = useCallback(async () => {
     if (userContext) {
-      await closeRenderingContext();
+      await closeRenderingContext()
       await runRenderingContext();
 
       const response = await zoomSdk.drawWebView({
@@ -92,11 +92,11 @@ const App: React.FC = () => {
       console.log('No userContext found. Will not render WebView.');
     }
   }, [
-    closeRenderingContext,
     runRenderingContext,
     config?.media?.renderTarget?.width,
     config?.media?.renderTarget?.height,
     userContext,
+    closeRenderingContext
   ]);
 
   const renderImmersiveModeWebview = useCallback(async () => {
