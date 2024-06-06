@@ -74,17 +74,20 @@ const App: React.FC = () => {
         runRenderingContextResponse
       );
 
-      zoomSdk
-        .drawWebView({
-          webviewId: 'webview-id-1',
-          x: 0,
-          y: 0,
-          width: config?.media?.renderTarget?.width,
-          height: config?.media?.renderTarget?.height,
-          zIndex: 9,
-        })
-        .then((_) => console.log(_))
-        .catch((e) => console.error('drawWebView::error => ', e));
+      if (config?.media) {
+        console.log('renderTarget => ', config.media.renderTarget);
+        zoomSdk
+          .drawWebView({
+            webviewId: 'MyCameraWebview',
+            x: 0,
+            y: 0,
+            width: config?.media?.renderTarget?.width,
+            height: config?.media?.renderTarget?.height,
+            zIndex: 9,
+          })
+          .then((_) => console.log(_))
+          .catch((e) => console.error('drawWebView::error => ', e));
+      }
 
       console.log('drawWebview::userContext => ', userContext);
     } else {
@@ -230,8 +233,13 @@ const App: React.FC = () => {
                 <Button
                   variant="outline"
                   onClick={async () => {
-                    zoomSdk.clearWebView().then(console.log).catch(console.error);
-                    closeRenderingContext().then(console.log).catch(console.error);
+                    zoomSdk
+                      .clearWebView()
+                      .then(console.log)
+                      .catch(console.error);
+                    closeRenderingContext()
+                      .then(console.log)
+                      .catch(console.error);
                   }}
                 >
                   Clear
