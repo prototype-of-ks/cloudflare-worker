@@ -61,23 +61,22 @@ const App: React.FC = () => {
   }, []);
 
   const renderCameraModeWebview = useCallback(async () => {
-    // if (userContext) {
     const drawCameraContext = await zoomSdk.runRenderingContext({
       view: 'camera',
     });
     console.log('drawCameraContext => ', drawCameraContext);
 
     const drawWebviewResponse = await zoomSdk.drawWebView({
-      webviewId: Math.random().toString(36).substring(7),
+      webviewId: 'MyCamera',
       x: 0,
       y: 0,
       width: config?.media?.renderTarget?.width,
       height: config?.media?.renderTarget?.height,
-      zIndex: 5,
+      zIndex: 999,
     });
 
     console.log('drawWebviewResponse => ', drawWebviewResponse);
-  }, [config]);
+  }, [config?.media?.renderTarget?.height, config?.media?.renderTarget?.width]);
 
   const renderImmersiveModeWebview = useCallback(async () => {
     zoomSdk
@@ -140,6 +139,8 @@ const App: React.FC = () => {
           'setVideoMirrorEffect',
           'getVideoState',
           'getMeetingLanguages',
+          'drawWebView',
+          'getImmersiveViewContext',
           // events
           'onConnect',
           'onMeeting',
@@ -231,7 +232,7 @@ const App: React.FC = () => {
       />
       {(runningContext === 'inCamera' || isDev) && (
         <>
-          <div className="card">
+          <div className="card !bg-black">
             <div className="gradient-background font-style user-context-wrapper">
               <div className="user-name">{userContext?.screenName}</div>
               <div className="user-role">
