@@ -121,6 +121,7 @@ const App: React.FC = () => {
           'drawImage',
           'drawParticipant',
           'drawWebView',
+          'clearWebView',
           'getMeetingParticipants',
           'getMeetingUUID',
           'getRunningContext',
@@ -151,23 +152,6 @@ const App: React.FC = () => {
     })();
   }, [isDev, config, init]);
 
-  // useEffect(() => {
-  //   if (!config) {
-  //     console.warn('No config provided.');
-  //     return;
-  //   }
-
-  //   zoomSdk.onMyMediaChange(async (event) => {
-  //     setOnMediaChangeEvent(event);
-  //     const media = event.media as Media;
-  //     if (media.video?.state) {
-  //       // await renderCameraModeWebview();
-  //     } else {
-  //       // await closeRenderingContext();
-  //     }
-  //   });
-  // }, [config, renderCameraModeWebview, closeRenderingContext]);
-
   useEffect(() => {
     if (config) console.log('config => ', config);
     if (runningContext) console.log('runningContext => ', runningContext);
@@ -194,13 +178,8 @@ const App: React.FC = () => {
                 <Button
                   variant="outline"
                   onClick={async () => {
-                    zoomSdk
-                      .clearWebView()
-                      .then(console.log)
-                      .catch(console.error);
-                    closeRenderingContext()
-                      .then(console.log)
-                      .catch(console.error);
+                    await zoomSdk.clearWebView();
+                    await closeRenderingContext();
                   }}
                 >
                   Clear
