@@ -1,0 +1,18 @@
+
+devloper 
+	- 
+
+functional 
+
+	- context
+		- get meeting context like meeting id/link   																		-> Priority: High
+		- get user context like role, screenName, id 																		-> Priority: High
+		- get meeting language 																													-> Priority: High
+		- get meeting chat context		 																									-> Priority: High
+		- get meeting participant mail																									-> Priority: Medium
+		- send message to another participant																						-> Priority: High
+	- camera
+		- set camera background/foreground 																							-> Priority: Low
+		- draw web view: draw webview on Zoom Panel or embed web view into Video 				-> Priority: High
+		- 
+					

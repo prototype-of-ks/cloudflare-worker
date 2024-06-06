@@ -125,7 +125,7 @@ const App: React.FC = () => {
     toast('Zoom App Notification', {
       description: 'Would you like to join AI Companion?',
       action: {
-        label: 'Undo',
+        label: 'Got it!',
         onClick() {
           console.log('Undo Zoom App Notification');
         },
@@ -189,9 +189,9 @@ const App: React.FC = () => {
       setOnMediaChangeEvent(event);
       const media = event.media as Media;
       if (media.video?.state) {
-        await renderCameraModeWebview();
+        // await renderCameraModeWebview();
       } else {
-        await closeRenderingContext();
+        // await closeRenderingContext();
       }
     });
   }, [config, renderCameraModeWebview, closeRenderingContext]);
