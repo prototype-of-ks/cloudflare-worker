@@ -254,8 +254,8 @@ const App: React.FC = () => {
                 <Button
                   variant="outline"
                   onClick={async () => {
-                    await zoomSdk.clearWebView();
-                    await closeRenderingContext();
+                    zoomSdk.clearWebView().then(console.log).catch(console.error);
+                    closeRenderingContext().then(console.log).catch(console.error);
                   }}
                 >
                   Clear
