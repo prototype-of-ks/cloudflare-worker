@@ -37,8 +37,7 @@ const App: React.FC = () => {
   const [runningContext, setRunningContext] = useState<RunningContext>();
   const [userContext, setUserContext] = useState<GetUserContextResponse>();
   const { onWaitingRoomParticipantJoinEvent } = useZoomEvent(config);
-  const [onMediaChangEvent] =
-    useState<OnMyMediaChangeEvent>();
+  const [onMediaChangEvent] = useState<OnMyMediaChangeEvent>();
   const [hasRunningContext, setHasRunningContext] = useState(false);
 
   const init = useCallback(async () => {
@@ -76,26 +75,42 @@ const App: React.FC = () => {
         runRenderingContextResponse
       );
 
-      zoomSdk.drawParticipant({
-        participantUUID: userContext.participantUUID,
-        x: 0,
-        y: 0,
-        width: (config?.media?.renderTarget?.width || 0) * 0.8,
-        height: (config?.media?.renderTarget?.height || 0),
-        zIndex: 2,
-      }).catch(e => console.error('drawParticipant::error => ', e))
+      zoomSdk
+        .drawParticipant({
+          participantUUID: userContext.participantUUID,
+          x: 0,
+          y: 0,
+          width: config?.media?.renderTarget?.width || 0,
+          height: config?.media?.renderTarget?.height || 0,
+          zIndex: 2,
+        })
+        .catch((e) => console.error('drawParticipant::error => ', e));
 
-      const response = await zoomSdk.drawWebView({
-        webviewId: 'webview-id-1',
-        x: 0,
-        y: 0,
-        width: config?.media?.renderTarget?.width,
-        height: config?.media?.renderTarget?.height,
-        zIndex: 999,
-      });
+      zoomSdk
+        .drawWebView({
+          webviewId: 'webview-id-1',
+          x: 0,
+          y: 0,
+          width: config?.media?.renderTarget?.width,
+          height: config?.media?.renderTarget?.height,
+          zIndex: 9,
+        })
+        .then((_) => console.log(_))
+        .catch((e) => console.error('drawWebView::error => ', e));
+
+      zoomSdk
+        .drawWebView({
+          webviewId: 'real-time-ai-companion',
+          x: (config?.media?.renderTarget?.width || 0) - 300,
+          y: 0,
+          width: 300,
+          height: 240,
+          zIndex: 9,
+        })
+        .then((_) => console.log(_))
+        .catch((e) => console.error('drawWebView::error => ', e));
 
       console.log('drawWebview::userContext => ', userContext);
-      console.log('drawWebview::camera => ', response);
     } else {
       console.log('No userContext found. Will not render WebView.');
     }
@@ -287,9 +302,7 @@ const App: React.FC = () => {
       />
       {(runningContext === 'inCamera' || isDev) && (
         <>
-          <div className="absolute bototm-0 right-0">
-
-          </div>
+          <div className="absolute bototm-0 right-0"></div>
           <div className="card">
             <div className="gradient-background font-style user-context-wrapper">
               <div className="user-name">{userContext?.screenName}</div>
