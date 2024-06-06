@@ -15,7 +15,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { useZoomEvent } from './hooks/useZoomEvent';
 import { toast } from 'sonner';
 import { Toaster } from '@/components/ui/sonner';
 import './App.css';
@@ -35,7 +34,6 @@ const App: React.FC = () => {
   const [config, setConfig] = useState<ConfigResponse>();
   const [runningContext, setRunningContext] = useState<RunningContext>();
   const [userContext, setUserContext] = useState<GetUserContextResponse>();
-  const { onWaitingRoomParticipantJoinEvent } = useZoomEvent(config);
 
   const init = useCallback(async () => {
     const { context } = await zoomSdk.getRunningContext();
@@ -138,6 +136,7 @@ const App: React.FC = () => {
           'onWaitingRoomParticipantJoin',
           'getChatContext',
           'getEmojiConfiguration',
+          'admitParticipantFromWaitingRoom',
         ],
       });
       setConfig(config);
@@ -153,12 +152,7 @@ const App: React.FC = () => {
     if (config) console.log('config => ', config);
     if (runningContext) console.log('runningContext => ', runningContext);
     if (userContext) console.log('userContext => ', userContext);
-    if (onWaitingRoomParticipantJoinEvent)
-      console.log(
-        'onWaitingRoomParticipantJoinEvent => ',
-        onWaitingRoomParticipantJoinEvent
-      );
-  }, [config, runningContext, userContext, onWaitingRoomParticipantJoinEvent]);
+  }, [config, runningContext, userContext]);
 
   return (
     <>
