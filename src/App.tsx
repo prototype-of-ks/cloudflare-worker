@@ -50,26 +50,23 @@ const App: React.FC = () => {
   }, []);
 
   const renderCameraModeWebview = useCallback(async () => {
-    if (userContext) {
-      const drawCameraContext = await zoomSdk.runRenderingContext({
-        view: 'camera',
-      });
-      console.log('drawCameraContext => ', drawCameraContext);
+    // if (userContext) {
+    const drawCameraContext = await zoomSdk.runRenderingContext({
+      view: 'camera',
+    });
+    console.log('drawCameraContext => ', drawCameraContext);
 
-      const drawWebviewResponse = await zoomSdk.drawWebView({
-        webviewId: Math.random().toString(36).substring(7),
-        x: 0,
-        y: 0,
-        width: config?.media?.renderTarget?.width,
-        height: config?.media?.renderTarget?.height,
-        zIndex: 2,
-      });
+    const drawWebviewResponse = await zoomSdk.drawWebView({
+      webviewId: Math.random().toString(36).substring(7),
+      x: 0,
+      y: 0,
+      width: config?.media?.renderTarget?.width,
+      height: config?.media?.renderTarget?.height,
+      zIndex: 5,
+    });
 
-      console.log('drawWebviewResponse => ', drawWebviewResponse);
-    } else {
-      console.log('No userContext found. Will not render WebView.');
-    }
-  }, [userContext, config]);
+    console.log('drawWebviewResponse => ', drawWebviewResponse);
+  }, [config]);
 
   const renderImmersiveModeWebview = useCallback(async () => {
     zoomSdk
@@ -178,7 +175,6 @@ const App: React.FC = () => {
                 <Button
                   variant="outline"
                   onClick={async () => {
-                    await zoomSdk.clearWebView();
                     await closeRenderingContext();
                   }}
                 >
