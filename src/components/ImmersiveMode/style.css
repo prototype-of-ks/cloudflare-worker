@@ -1,0 +1,26 @@
+.immersive-app-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .immersive-app-user-context {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 8px;
+
+
+    .value {
+        font-weight: bold;
+        margin-left: 8px;
+    }
+  }
+
+  .immersive-app-actions {
+    margin-top: 16px;
+    display: flex; 
+    flex-direction: row;
+    gap:  4px;
+  }
+}

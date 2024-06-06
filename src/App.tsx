@@ -5,11 +5,20 @@ import zoomSdk, {
 } from '@zoom/appssdk';
 import { useEffect, useState, useCallback } from 'react';
 import { useDev } from './hooks/useDev';
-import './App.css';
 import { useTimezone } from './hooks/useTimezone';
+import ImmersiveMode from './components/ImmersiveMode';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import './App.css';
 
 const App: React.FC = () => {
-  const { localTime } = useTimezone();
+  const { localTime, timeZone } = useTimezone();
   const { isDev } = useDev();
   const [config, setConfig] = useState<ConfigResponse>();
   const [runningContext, setRunningContext] = useState<RunningContext>();
@@ -31,15 +40,6 @@ const App: React.FC = () => {
     setRunningContext(context);
   }, []);
 
-  const getRemoteIP = useCallback(async () => {
-    try {
-      const response = await (await fetch('/api/v1/getRemoteIP')).json();
-      console.log('Remote IP: ', response);
-    } catch (e) {
-      console.error('Failing in getting remote IP: ', e);
-    }
-  }, []);
-
   const closeRenderingContext = useCallback(async () => {
     await zoomSdk.closeRenderingContext();
   }, []);
@@ -52,7 +52,7 @@ const App: React.FC = () => {
     console.log('runRenderingContext::camera => ', response);
   }, []);
 
-  const renderWebView = useCallback(async () => {
+  const renderCameraModeWebview = useCallback(async () => {
     if (userContext) {
       await runRenderingContext();
 
@@ -76,6 +76,19 @@ const App: React.FC = () => {
     config?.media?.renderTarget?.height,
     userContext,
   ]);
+
+  const renderImmersiveModeWebview = useCallback(async () => {
+    try {
+      await closeRenderingContext();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      const response = await zoomSdk.runRenderingContext({
+        view: 'immersive',
+      });
+      console.log('renderImmersiveApp::Immersive => ', response);
+    }
+  }, [closeRenderingContext]);
 
   const showNotification = useCallback(async () => {
     await zoomSdk.showNotification({
@@ -136,23 +149,59 @@ const App: React.FC = () => {
     if (userContext) console.log('userContext => ', userContext);
   }, [config, runningContext, userContext]);
 
-  useEffect(() => {
-    getRemoteIP();
-  }, [getRemoteIP]);
-
   return (
     <>
-      {runningContext === 'inMeeting' && (
+      {(runningContext === 'inMeeting' || isDev) && (
         <>
-          <a className="read-the-docs" onClick={showNotification}>
-            Zoom AI Notification
-          </a>
-          <div className="action-group">
-            <button onClick={renderWebView}>Render</button>
-            <button onClick={closeRenderingContext}>Clear</button>
+          <h3 className="text-[24px] font-bold my-4">Zoom App</h3>
+          <div className="flex flex-col gap-4">
+            <Card className="w-[350px] text-left">
+              <CardHeader>
+                <CardTitle>Camera Mode</CardTitle>
+                <CardDescription>Draw Webview in Camera Mode</CardDescription>
+              </CardHeader>
+              <CardFooter className="flex justify-between">
+                <Button variant="outline" onClick={closeRenderingContext}>
+                  Clear
+                </Button>
+                <Button onClick={renderCameraModeWebview}>Render</Button>
+              </CardFooter>
+            </Card>
+            <Card className="w-[350px] text-left">
+              <CardHeader>
+                <CardTitle>Immersive Mode</CardTitle>
+                <CardDescription>
+                  Draw Webview in Inmmersive Mode
+                </CardDescription>
+              </CardHeader>
+              <CardFooter className="flex justify-between">
+                <Button variant="outline" onClick={closeRenderingContext}>
+                  Clear
+                </Button>
+                <Button onClick={renderImmersiveModeWebview}>Render</Button>
+              </CardFooter>
+            </Card>
+            <Card className="w-[350px] text-left">
+              <CardHeader>
+                <CardTitle>Notification</CardTitle>
+                <CardDescription>
+                  Show Notification in several ways
+                </CardDescription>
+              </CardHeader>
+              <CardFooter className="flex flex-col items-start gap-2">
+                <Button onClick={showNotification}>
+                  Show Notification in Zoom Client
+                </Button>
+                <Button>Show Notification in Zoom App</Button>
+              </CardFooter>
+            </Card>
           </div>
         </>
       )}
+      <ImmersiveMode
+        runningContext={runningContext}
+        userContext={userContext}
+      />
       {(runningContext === 'inCamera' || isDev) && (
         <div className="card">
           <div className="gradient-background font-style user-context-wrapper">
@@ -174,15 +223,20 @@ const App: React.FC = () => {
                 <span>🤖</span>
                 <span>AI Companion</span>
               </span>
-              <span className="context-section">
-                {/* <FontAwesomeIcon icon="record-vinyl" fontSize={16} /> */}
+              {/* <FontAwesomeIcon icon="record-vinyl" fontSize={16} /> */}
+              {/* <span className="context-section">
                 <span>🎥</span>
                 <span>Recording</span>
-              </span>
+              </span> */}
               <span className="context-section">
                 {/* <FontAwesomeIcon icon="location-arrow" fontSize={16} /> */}
                 <span>📍</span>
-                <span>{localTime}</span>
+                <span>{timeZone}</span>
+              </span>
+              <span className="context-section">
+                {/* <FontAwesomeIcon icon="location-arrow" fontSize={16} /> */}
+                <span>|</span>
+                <span>Joined at {localTime}</span>
               </span>
             </div>
           </div>
