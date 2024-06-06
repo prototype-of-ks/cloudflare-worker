@@ -37,7 +37,7 @@ const App: React.FC = () => {
   const [runningContext, setRunningContext] = useState<RunningContext>();
   const [userContext, setUserContext] = useState<GetUserContextResponse>();
   const { onWaitingRoomParticipantJoinEvent } = useZoomEvent(config);
-  const [onMediaChangEvent, setOnMediaChangeEvent] =
+  const [onMediaChangEvent] =
     useState<OnMyMediaChangeEvent>();
   const [hasRunningContext, setHasRunningContext] = useState(false);
 
