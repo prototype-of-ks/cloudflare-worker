@@ -51,28 +51,21 @@ const App: React.FC = () => {
 
   const renderCameraModeWebview = useCallback(async () => {
     if (userContext) {
-      zoomSdk
-        .runRenderingContext({
-          view: 'camera',
-        })
-        .then((_) => console.log('runRenderingContext::camera => ', _))
-        .catch((e) =>
-          console.error('runRenderingContext::camera::error => ', e)
-        );
+      const drawCameraContext = await zoomSdk.runRenderingContext({
+        view: 'camera',
+      });
+      console.log('drawCameraContext => ', drawCameraContext);
 
-      zoomSdk
-        .drawWebView({
-          webviewId: Math.random().toString(36).substring(7),
-          x: 0,
-          y: 0,
-          width: config?.media?.renderTarget?.width,
-          height: config?.media?.renderTarget?.height,
-          zIndex: 2,
-        })
-        .then((_) => console.log(_))
-        .catch((e) => console.error('drawWebView::error => ', e));
+      const drawWebviewResponse = await zoomSdk.drawWebView({
+        webviewId: Math.random().toString(36).substring(7),
+        x: 0,
+        y: 0,
+        width: config?.media?.renderTarget?.width,
+        height: config?.media?.renderTarget?.height,
+        zIndex: 2,
+      });
 
-      console.log('drawWebview::userContext => ', userContext);
+      console.log('drawWebviewResponse => ', drawWebviewResponse);
     } else {
       console.log('No userContext found. Will not render WebView.');
     }
