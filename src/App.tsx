@@ -39,6 +39,10 @@ const App: React.FC = () => {
     const { context } = await zoomSdk.getRunningContext();
     const userContext = await zoomSdk.getUserContext();
 
+    zoomSdk.setVideoState({
+      video: true
+    }).then(e => console.log(e)).catch(console.error);
+
     setUserContext(userContext);
     setRunningContext(context);
   }, []);
@@ -137,6 +141,7 @@ const App: React.FC = () => {
           'getChatContext',
           'getEmojiConfiguration',
           'admitParticipantFromWaitingRoom',
+          'setVideoState'
         ],
       });
       setConfig(config);
