@@ -2,7 +2,7 @@ import zoomSdk, {
   ConfigResponse,
   RunningContext,
   GetUserContextResponse,
-  OnMyMediaChangeEvent
+  OnMyMediaChangeEvent,
 } from '@zoom/appssdk';
 import { useEffect, useState, useCallback } from 'react';
 import { useDev } from './hooks/useDev';
@@ -68,11 +68,13 @@ const App: React.FC = () => {
     const response = await zoomSdk.runRenderingContext({
       view: 'camera',
     });
+    setHasRunningContext(true);
     console.log('runRenderingContext::camera => ', response);
   }, []);
 
   const renderCameraModeWebview = useCallback(async () => {
     if (userContext) {
+      await closeRenderingContext();
       await runRenderingContext();
 
       const response = await zoomSdk.drawWebView({
@@ -90,6 +92,7 @@ const App: React.FC = () => {
       console.log('No userContext found. Will not render WebView.');
     }
   }, [
+    closeRenderingContext,
     runRenderingContext,
     config?.media?.renderTarget?.width,
     config?.media?.renderTarget?.height,
@@ -98,14 +101,17 @@ const App: React.FC = () => {
 
   const renderImmersiveModeWebview = useCallback(async () => {
     try {
+      await closeRenderingContext();
       const response = await zoomSdk.runRenderingContext({
         view: 'immersive',
       });
+      setHasRunningContext(true);
+
       console.log('renderImmersiveApp::Immersive => ', response);
     } catch (e) {
       console.log(e);
     }
-  }, [runRenderingContext]);
+  }, [closeRenderingContext]);
 
   const showZoomClientNotification = useCallback(async () => {
     await zoomSdk.showNotification({
