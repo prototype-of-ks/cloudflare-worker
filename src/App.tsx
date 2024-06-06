@@ -89,7 +89,7 @@ const App: React.FC = () => {
         webviewId: 'webview-id-1',
         x: 0,
         y: 0,
-        width: (config?.media?.renderTarget?.width || 0) * 0.8,
+        width: config?.media?.renderTarget?.width,
         height: config?.media?.renderTarget?.height,
         zIndex: 999,
       });
