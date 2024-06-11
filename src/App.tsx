@@ -20,15 +20,30 @@ import { toast } from 'sonner';
 import { Toaster } from '@/components/ui/sonner';
 import './App.css';
 import MeetingMode from './components/MeetingMode';
+import { Input } from '@/components/ui/input';
 
-// type Media = {
-//   audio?: {
-//     state?: boolean;
-//   };
-//   video?: {
-//     state?: boolean;
-//   };
-// };
+// Function to draw a rounded rectangle
+function drawRoundedRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number
+) {
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
+  ctx.fill();
+}
 
 const App: React.FC = () => {
   const { localTime, timeZone } = useTimezone();
@@ -43,6 +58,7 @@ const App: React.FC = () => {
     participantUUID: '',
     participantId: '',
   });
+  const [voteMessage, setVoteMessage] = useState<string>();
 
   const init = useCallback(async () => {
     const { context } = await zoomSdk.getRunningContext();
@@ -188,40 +204,13 @@ const App: React.FC = () => {
     if (userContext) console.log('userContext => ', userContext);
   }, [config, runningContext, userContext]);
 
-  const drawImage = async ({
+  const drawInCameraVotingMessage = async ({
     title,
     text,
   }: {
     title?: string;
     text?: string;
   }) => {
-    // Function to draw a rounded rectangle
-    function drawRoundedRect(
-      ctx: CanvasRenderingContext2D,
-      x: number,
-      y: number,
-      width: number,
-      height: number,
-      radius: number
-    ) {
-      ctx.beginPath();
-      ctx.moveTo(x + radius, y);
-      ctx.lineTo(x + width - radius, y);
-      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-      ctx.lineTo(x + width, y + height - radius);
-      ctx.quadraticCurveTo(
-        x + width,
-        y + height,
-        x + width - radius,
-        y + height
-      );
-      ctx.lineTo(x + radius, y + height);
-      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-      ctx.lineTo(x, y + radius);
-      ctx.quadraticCurveTo(x, y, x + radius, y);
-      ctx.closePath();
-      ctx.fill();
-    }
     if (config?.media?.renderTarget) {
       const renderWidth = 400;
       const renderHeight = 150;
@@ -273,6 +262,59 @@ const App: React.FC = () => {
       }
     }
   };
+
+  const drawInCameraNotification = useCallback(async () => {
+    if (config?.media?.renderTarget) {
+      const renderWidth = 400;
+      const renderHeight = 150;
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const ratio = window.devicePixelRatio;
+      canvas.width = renderWidth;
+      canvas.height = renderHeight;
+
+      canvas.style.width = canvas.width + 'px';
+      canvas.style.height = canvas.height + 'px';
+      canvas.style.background = 'black';
+
+      canvas.width *= ratio;
+      canvas.height *= ratio;
+
+      if (ctx) {
+        ctx.scale(ratio, ratio);
+
+        // Create a transparent rectangle with a blur effect
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        // ctx.fillRect(0, 0, canvas.width / ratio, canvas.height / ratio);
+
+        ctx.filter = 'blur(10px)'; // Apply blur filter
+        drawRoundedRect(ctx, 0, 0, renderWidth, renderHeight, 20);
+
+        // Draw "vote 1 for " text
+        ctx.font = '28px sans-serif';
+        ctx.fillText('Zoom App Notification', 10, 50);
+
+        ctx.font = '40px sans-serif';
+        ctx.fillStyle = 'black';
+        ctx.fillText('Would you like to start AI Companion?', 10, 100);
+
+        canvas.addEventListener('click', () => {
+          console.log('click image work!');
+        });
+
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const response = await zoomSdk.drawImage({
+          imageData,
+          x: config?.media?.renderTarget.width - 200,
+          y: 100,
+          zIndex: 20,
+        });
+
+        console.log('response draw image => ', response);
+      }
+    }
+  }, [config?.media?.renderTarget]);
 
   return (
     <>
@@ -346,31 +388,40 @@ const App: React.FC = () => {
                 <Button onClick={showZoomAppNotification}>
                   Show Notification in Zoom App
                 </Button>
-              </CardFooter>
-            </Card>
-
-            <Card className="text-left">
-              <CardHeader>
-                <CardTitle>Voting Table</CardTitle>
-                {/* <CardDescription>
-                  Draw Webview in Inmmersive Mode
-                </CardDescription> */}
-              </CardHeader>
-              <CardFooter className="flex justify-between">
-                {/* <Button variant="outline" onClick={closeRenderingContext}>
-                  Clear
-                </Button> */}
-                <Button
-                  onClick={() =>
-                    drawImage({
-                      title: 'Vote',
-                      text: 'Yes',
-                    })
-                  }
-                >
-                  Vote
+                <Button onClick={drawInCameraNotification}>
+                  Show Notification in Video Stream
                 </Button>
               </CardFooter>
+            </Card>
+            <Card className="text-left mb-20">
+              <CardHeader>
+                <CardTitle>Voting Table</CardTitle>
+                <CardDescription>
+                  {/* Draw Webview in Inmmersive Mode */}
+                  <div className="flex w-full max-w-sm items-center space-x-2">
+                    <Input
+                      type="search"
+                      placeholder="Enter your message"
+                      value={voteMessage}
+                      onChange={(event) => {
+                        setVoteMessage(event.target.value);
+                      }}
+                    />
+                    <Button
+                      type="submit"
+                      onClick={() => {
+                        console.log('vote message => ', voteMessage);
+                        drawInCameraVotingMessage({
+                          title: 'vote',
+                          text: voteMessage,
+                        });
+                      }}
+                    >
+                      Send
+                    </Button>
+                  </div>
+                </CardDescription>
+              </CardHeader>
             </Card>
           </div>
           <Toaster />
