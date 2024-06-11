@@ -4,18 +4,18 @@ import moment from 'moment-timezone';
 export function useTimezone() {
   const [timeZone] = useState<string>(moment.tz.guess());
   const [localTime, setLocalTime] = useState<string>();
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentTime] = useState(new Date());
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     setCurrentTime(new Date());
+  //   }, 1000);
 
-    // 组件卸载时清除定时器
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, []);
+  //   // 组件卸载时清除定时器
+  //   return () => {
+  //     clearInterval(intervalId);
+  //   };
+  // }, []);
 
   useEffect(() => {
     if (!timeZone) {

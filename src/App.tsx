@@ -21,6 +21,7 @@ import { Toaster } from '@/components/ui/sonner';
 import './App.css';
 import MeetingMode from './components/MeetingMode';
 import { Input } from '@/components/ui/input';
+import VotingTable from './components/VotingTable';
 
 // Function to draw a rounded rectangle
 function drawRoundedRect(
@@ -420,6 +421,7 @@ const App: React.FC = () => {
         runningContext={runningContext}
         userContext={userContext}
       />
+      <VotingTable />
       {(runningContext === 'inCamera' || isDev) && (
         <>
           <div className="card">
