@@ -98,10 +98,7 @@ const App: React.FC = () => {
     });
 
     console.log('drawWebviewResponse => ', drawWebviewResponse);
-  }, [
-    config?.media?.renderTarget?.height,
-    config?.media?.renderTarget?.width,
-  ]);
+  }, [config?.media?.renderTarget?.height, config?.media?.renderTarget?.width]);
 
   const renderImmersiveModeWebview = useCallback(async () => {
     zoomSdk
@@ -207,6 +204,16 @@ const App: React.FC = () => {
 
     if (ctx && config?.media?.renderTarget) {
       ctx.scale(ratio, ratio);
+
+      // Create a transparent rectangle with a blur effect
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.fillRect(0, 0, canvas.width / ratio, canvas.height / ratio);
+      ctx.filter = 'blur(10px)'; // Apply blur filter
+
+      // Draw "vote 1 for " text
+      ctx.font = '28px sans-serif';
+      ctx.fillText('Your response for vote 1', 10, 100);
+
       ctx.font = '40px sans-serif';
       ctx.fillStyle = 'black';
       ctx.fillText('Hello World', 10, 50);
@@ -218,8 +225,8 @@ const App: React.FC = () => {
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const response = await zoomSdk.drawImage({
         imageData,
-        x: config?.media?.renderTarget.width - 640,
-        y: Math.floor(config.media.renderTarget.height / 2) + 100,
+        x: config?.media?.renderTarget.width - 500,
+        y: Math.floor(config.media.renderTarget.height / 2) - 100,
         zIndex: 20,
       });
 
