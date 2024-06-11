@@ -217,14 +217,14 @@ const App: React.FC = () => {
       ctx.fill();
     }
     if (config?.media?.renderTarget) {
-      // const renderWidth = config.media.renderTarget.width;
-      // const renderHeight = config.media.renderTarget.height;
+      const renderWidth = 400;
+      const renderHeight = 100;
 
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       const ratio = window.devicePixelRatio;
-      canvas.width = 400;
-      canvas.height = 200;
+      canvas.width = renderWidth;
+      canvas.height = renderHeight;
 
       canvas.style.width = canvas.width + 'px';
       canvas.style.height = canvas.height + 'px';
@@ -241,7 +241,7 @@ const App: React.FC = () => {
         // ctx.fillRect(0, 0, canvas.width / ratio, canvas.height / ratio);
 
         ctx.filter = 'blur(10px)'; // Apply blur filter
-        drawRoundedRect(ctx, 0, 0, canvas.width, canvas.height, 20);
+        drawRoundedRect(ctx, 0, 0, renderWidth, renderHeight, 20);
 
         // Draw "vote 1 for " text
         ctx.font = '28px sans-serif';
