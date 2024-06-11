@@ -199,6 +199,34 @@ const App: React.FC = () => {
     canvas.style.height = canvas.height + 'px';
     canvas.style.background = 'black';
 
+    // Function to draw a rounded rectangle
+    function drawRoundedRect(
+      ctx: CanvasRenderingContext2D,
+      x: number,
+      y: number,
+      width: number,
+      height: number,
+      radius: number
+    ) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(
+        x + width,
+        y + height,
+        x + width - radius,
+        y + height
+      );
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+      ctx.fill();
+    }
+
     canvas.width *= ratio;
     canvas.height *= ratio;
 
@@ -207,8 +235,17 @@ const App: React.FC = () => {
 
       // Create a transparent rectangle with a blur effect
       ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-      ctx.fillRect(0, 0, canvas.width / ratio, canvas.height / ratio);
+      // ctx.fillRect(0, 0, canvas.width / ratio, canvas.height / ratio);
+
       ctx.filter = 'blur(10px)'; // Apply blur filter
+      drawRoundedRect(
+        ctx,
+        0,
+        0,
+        canvas.width,
+        canvas.height,
+        20
+      );
 
       // Draw "vote 1 for " text
       ctx.font = '28px sans-serif';
@@ -242,7 +279,7 @@ const App: React.FC = () => {
             <div>
               <div className="flex items-center gap-2 mb-2">
                 {/* <SunOutlined className="night-mode-shift-icon w-4 h-4 text-white" /> */}
-                <span className="text-white">
+                <span className="text-white text-left">
                   Meeting ID: {meetingUUID ?? 'Z3R6UVJERjyZPMrgxFGJBw=='}
                 </span>
               </div>
