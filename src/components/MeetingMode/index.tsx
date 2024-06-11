@@ -3,7 +3,7 @@ import { Card } from '../ui/card';
 
 const MeetingMode: React.FC = () => {
   return (
-    <div className="flex flex-row flex-wrap gap-2 mt-4">
+    <div className="flex flex-col flex-wrap gap-2 mt-4">
       <Card className="flex flex-col gap-4 w-[280px] p-4">
         <div className="flex flex-col gap-4">
           <div className="flex flex-row gap-4 justify-start">
@@ -22,7 +22,7 @@ const MeetingMode: React.FC = () => {
           <span className="bg-[#cc8634] px-2 rounded-2xl inline-flex text-white w-[160px]">
             AI Companion Tip
           </span>
-          <span>
+          <span className="text-left">
             As host, would you like to start AI Companion?
           </span>
         </div>

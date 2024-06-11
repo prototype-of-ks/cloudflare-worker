@@ -48,31 +48,31 @@ const App: React.FC = () => {
     const { context } = await zoomSdk.getRunningContext();
     const userContext = await zoomSdk.getUserContext();
 
-    zoomSdk
-      .setVideoState({
-        video: true,
-      })
-      .then(() => {
-        zoomSdk
-          .setVideoMirrorEffect({
-            mirrorMyVideo: false,
-          })
-          .then(async () => {
-            await zoomSdk.runRenderingContext({
-              view: 'camera',
-            });
-            await zoomSdk.drawWebView({
-              x: 0,
-              y: 0,
-              width: 1280,
-              height: 720,
-              zIndex: 99,
-              webviewId: 'webviewId',
-            });
-          })
-          .catch((e) => console.error('setVideoMirrorEffect::error => ', e));
-      })
-      .catch(console.error);
+    // zoomSdk
+    //   .setVideoState({
+    //     video: true,
+    //   })
+    //   .then(() => {
+    //     zoomSdk
+    //       .setVideoMirrorEffect({
+    //         mirrorMyVideo: false,
+    //       })
+    //       .then(async () => {
+    //         await zoomSdk.runRenderingContext({
+    //           view: 'camera',
+    //         });
+    //         await zoomSdk.drawWebView({
+    //           x: 0,
+    //           y: 0,
+    //           width: 1280,
+    //           height: 720,
+    //           zIndex: 99,
+    //           webviewId: 'webviewId',
+    //         });
+    //       })
+    //       .catch((e) => console.error('setVideoMirrorEffect::error => ', e));
+    //   })
+    //   .catch(console.error);
 
     setUserContext(userContext);
     setRunningContext(context);
@@ -83,22 +83,28 @@ const App: React.FC = () => {
   }, []);
 
   const renderCameraModeWebview = useCallback(async () => {
-    const drawCameraContext = await zoomSdk.runRenderingContext({
-      view: 'camera',
-    });
-    console.log('drawCameraContext => ', drawCameraContext);
+    if (languages.length !== 0) {
+      const drawCameraContext = await zoomSdk.runRenderingContext({
+        view: 'camera',
+      });
+      console.log('drawCameraContext => ', drawCameraContext);
 
-    const drawWebviewResponse = await zoomSdk.drawWebView({
-      webviewId: 'camera',
-      x: 0,
-      y: 0,
-      width: config?.media?.renderTarget?.width,
-      height: config?.media?.renderTarget?.height,
-      zIndex: 999,
-    });
+      const drawWebviewResponse = await zoomSdk.drawWebView({
+        webviewId: 'camera',
+        x: 0,
+        y: 0,
+        width: config?.media?.renderTarget?.width,
+        height: config?.media?.renderTarget?.height,
+        zIndex: 999,
+      });
 
-    console.log('drawWebviewResponse => ', drawWebviewResponse);
-  }, [config?.media?.renderTarget?.height, config?.media?.renderTarget?.width]);
+      console.log('drawWebviewResponse => ', drawWebviewResponse);
+    }
+  }, [
+    config?.media?.renderTarget?.height,
+    config?.media?.renderTarget?.width,
+    languages.length,
+  ]);
 
   const renderImmersiveModeWebview = useCallback(async () => {
     zoomSdk
@@ -186,27 +192,65 @@ const App: React.FC = () => {
     if (userContext) console.log('userContext => ', userContext);
   }, [config, runningContext, userContext]);
 
+  const drawImage = async () => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const ratio = window.devicePixelRatio;
+    canvas.width = 640;
+    canvas.height = 480;
+
+    canvas.style.width = canvas.width + 'px';
+    canvas.style.height = canvas.height + 'px';
+    canvas.style.background = 'black';
+
+    canvas.width *= ratio;
+    canvas.height *= ratio;
+
+    if (ctx && config?.media?.renderTarget) {
+      ctx.scale(ratio, ratio);
+      ctx.font = '40px sans-serif';
+      ctx.fillStyle = 'black';
+      ctx.fillText('Hello World', 10, 50);
+
+      canvas.addEventListener('click', () => {
+        console.log('click image work!');
+      });
+
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const response = await zoomSdk.drawImage({
+        imageData,
+        x: config?.media?.renderTarget.width - 100,
+        y: Math.floor(config.media.renderTarget.height / 2) + 100,
+        zIndex: 99,
+      });
+
+      console.log('response draw image => ', response);
+    }
+  };
+
   return (
     <>
       {(runningContext === 'inMeeting' || isDev) && (
         <>
           <header className="zoom-notification-header">
-            <div className="flex items-center gap-2">
-              {/* <SunOutlined className="night-mode-shift-icon w-4 h-4 text-white" /> */}
-              <span className="text-white">
-                Meeting ID: {meetingUUID}
-              </span>
-            </div>
-            <div className="flex flex-row items-center gap-2">
-              <div className="flex flex-row items-center gap-2 bg-[#5a56d0] p-2 rounded-md cursor-pointer">
-                <div className="flex items-center justify-center w-5 h-5 rounded-full bg-[#9c9ae3] text-center">
-                  <span className="w-3 h-3 bg-green-600 inline-block rounded-full"></span>
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                {/* <SunOutlined className="night-mode-shift-icon w-4 h-4 text-white" /> */}
+                <span className="text-white">
+                  Meeting ID: {meetingUUID ?? 'Z3R6UVJERjyZPMrgxFGJBw=='}
+                </span>
+              </div>
+              <div className="flex flex-row items-center gap-2">
+                <div className="flex flex-row items-center gap-2 bg-[#5a56d0] p-2 rounded-md cursor-pointer">
+                  <div className="flex items-center justify-center w-5 h-5 rounded-full bg-[#9c9ae3] text-center">
+                    <span className="w-3 h-3 bg-green-600 inline-block rounded-full"></span>
+                  </div>
+                  <span className="text-white">Cloud Recording</span>
                 </div>
-                <span className="text-white">Cloud Recording</span>
               </div>
-              <div className="bg-[#827fdb] rounded-md h-10 flex items-center px-2">
-                MK
-              </div>
+            </div>
+            <div className="bg-[#827fdb] rounded-md h-10 flex items-center px-2">
+              MK
             </div>
           </header>
           {/* <CloseOutlined className="absolute right-5 top-4 cursor-pointer" /> */}
@@ -256,6 +300,21 @@ const App: React.FC = () => {
                 <Button onClick={showZoomAppNotification}>
                   Show Notification in Zoom App
                 </Button>
+              </CardFooter>
+            </Card>
+
+            <Card className="text-left">
+              <CardHeader>
+                <CardTitle>Voting Table</CardTitle>
+                {/* <CardDescription>
+                  Draw Webview in Inmmersive Mode
+                </CardDescription> */}
+              </CardHeader>
+              <CardFooter className="flex justify-between">
+                {/* <Button variant="outline" onClick={closeRenderingContext}>
+                  Clear
+                </Button> */}
+                <Button onClick={drawImage}>Vote</Button>
               </CardFooter>
             </Card>
           </div>

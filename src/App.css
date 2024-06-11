@@ -6,7 +6,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 64px 32px 0;
+  padding: 96px 32px 0;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -133,5 +133,11 @@
 }
 
 .zoom-notification-header {
-  @apply bg-[#4c47cc] flex justify-between items-center h-16 px-4 fixed top-0 left-0 w-full;
+  @apply bg-[#4c47cc] flex flex-row justify-between items-center h-16 px-4 fixed top-0 left-0 w-full;
+}
+
+@media (max-width: 768px) {
+  .zoom-notification-header {
+    @apply h-auto py-2 gap-2;
+  }
 }
