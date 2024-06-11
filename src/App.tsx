@@ -189,16 +189,6 @@ const App: React.FC = () => {
   }, [config, runningContext, userContext]);
 
   const drawImage = async () => {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const ratio = window.devicePixelRatio;
-    canvas.width = 640;
-    canvas.height = 480;
-
-    canvas.style.width = canvas.width + 'px';
-    canvas.style.height = canvas.height + 'px';
-    canvas.style.background = 'black';
-
     // Function to draw a rounded rectangle
     function drawRoundedRect(
       ctx: CanvasRenderingContext2D,
@@ -226,48 +216,55 @@ const App: React.FC = () => {
       ctx.closePath();
       ctx.fill();
     }
+    if (config?.media?.renderTarget) {
+      const renderWidth = config.media.renderTarget.width;
+      // const renderHeight = config.media.renderTarget.height;
 
-    canvas.width *= ratio;
-    canvas.height *= ratio;
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const ratio = window.devicePixelRatio;
+      canvas.width = Math.floor(renderWidth / 3);
+      canvas.height = 300;
 
-    if (ctx && config?.media?.renderTarget) {
-      ctx.scale(ratio, ratio);
+      canvas.style.width = canvas.width + 'px';
+      canvas.style.height = canvas.height + 'px';
+      canvas.style.background = 'black';
 
-      // Create a transparent rectangle with a blur effect
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-      // ctx.fillRect(0, 0, canvas.width / ratio, canvas.height / ratio);
+      canvas.width *= ratio;
+      canvas.height *= ratio;
 
-      ctx.filter = 'blur(10px)'; // Apply blur filter
-      drawRoundedRect(
-        ctx,
-        0,
-        0,
-        canvas.width,
-        canvas.height,
-        20
-      );
+      if (ctx) {
+        ctx.scale(ratio, ratio);
 
-      // Draw "vote 1 for " text
-      ctx.font = '28px sans-serif';
-      ctx.fillText('Your response for vote 1', 10, 100);
+        // Create a transparent rectangle with a blur effect
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        // ctx.fillRect(0, 0, canvas.width / ratio, canvas.height / ratio);
 
-      ctx.font = '40px sans-serif';
-      ctx.fillStyle = 'black';
-      ctx.fillText('Hello World', 10, 50);
+        ctx.filter = 'blur(10px)'; // Apply blur filter
+        drawRoundedRect(ctx, 0, 0, canvas.width, canvas.height, 20);
 
-      canvas.addEventListener('click', () => {
-        console.log('click image work!');
-      });
+        // Draw "vote 1 for " text
+        ctx.font = '28px sans-serif';
+        ctx.fillText('Vote 1', 10, 50);
 
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const response = await zoomSdk.drawImage({
-        imageData,
-        x: config?.media?.renderTarget.width - 500,
-        y: Math.floor(config.media.renderTarget.height / 2) - 100,
-        zIndex: 20,
-      });
+        ctx.font = '40px sans-serif';
+        ctx.fillStyle = 'black';
+        ctx.fillText('Hello World', 10, 100);
 
-      console.log('response draw image => ', response);
+        canvas.addEventListener('click', () => {
+          console.log('click image work!');
+        });
+
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const response = await zoomSdk.drawImage({
+          imageData,
+          x: config?.media?.renderTarget.width - 500,
+          y: Math.floor(config.media.renderTarget.height / 2) - 100,
+          zIndex: 20,
+        });
+
+        console.log('response draw image => ', response);
+      }
     }
   };
 
