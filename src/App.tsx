@@ -266,7 +266,7 @@ const App: React.FC = () => {
   const drawInCameraNotification = useCallback(async () => {
     if (config?.media?.renderTarget) {
       const renderWidth = 400;
-      const renderHeight = 150;
+      const renderHeight = 64;
 
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
@@ -292,12 +292,12 @@ const App: React.FC = () => {
         drawRoundedRect(ctx, 0, 0, renderWidth, renderHeight, 20);
 
         // Draw "vote 1 for " text
-        ctx.font = '28px sans-serif';
-        ctx.fillText('Zoom App Notification', 10, 50);
+        ctx.font = '24px sans-serif';
+        ctx.fillText('Zoom App Notification', 10, 20);
 
-        ctx.font = '40px sans-serif';
+        ctx.font = '16px sans-serif';
         ctx.fillStyle = 'black';
-        ctx.fillText('Would you like to start AI Companion?', 10, 100);
+        ctx.fillText('Would you like to start AI Companion?', 10, 40);
 
         canvas.addEventListener('click', () => {
           console.log('click image work!');
@@ -306,9 +306,9 @@ const App: React.FC = () => {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const response = await zoomSdk.drawImage({
           imageData,
-          x: config?.media?.renderTarget.width - 200,
-          y: 100,
-          zIndex: 20,
+          x: Math.floor(config.media.renderTarget.width / 2) - 200,
+          y: 20,
+          zIndex: 30,
         });
 
         console.log('response draw image => ', response);
