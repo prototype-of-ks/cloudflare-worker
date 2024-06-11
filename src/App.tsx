@@ -218,13 +218,13 @@ const App: React.FC = () => {
     }
     if (config?.media?.renderTarget) {
       const renderWidth = config.media.renderTarget.width;
-      // const renderHeight = config.media.renderTarget.height;
+      const renderHeight = config.media.renderTarget.height;
 
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       const ratio = window.devicePixelRatio;
       canvas.width = Math.floor(renderWidth / 3);
-      canvas.height = 300;
+      canvas.height = Math.floor(renderHeight / 3);
 
       canvas.style.width = canvas.width + 'px';
       canvas.style.height = canvas.height + 'px';
@@ -258,7 +258,7 @@ const App: React.FC = () => {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const response = await zoomSdk.drawImage({
           imageData,
-          x: config?.media?.renderTarget.width - 500,
+          x: Math.floor(-renderHeight / 3),
           y: Math.floor(config.media.renderTarget.height / 2) - 100,
           zIndex: 20,
         });
