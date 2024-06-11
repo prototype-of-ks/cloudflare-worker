@@ -83,7 +83,6 @@ const App: React.FC = () => {
   }, []);
 
   const renderCameraModeWebview = useCallback(async () => {
-    // if (languages.length !== 0) {
     const drawCameraContext = await zoomSdk.runRenderingContext({
       view: 'camera',
     });
@@ -95,11 +94,10 @@ const App: React.FC = () => {
       y: 0,
       width: config?.media?.renderTarget?.width,
       height: config?.media?.renderTarget?.height,
-      zIndex: 999,
+      zIndex: 9,
     });
 
     console.log('drawWebviewResponse => ', drawWebviewResponse);
-    // }
   }, [
     config?.media?.renderTarget?.height,
     config?.media?.renderTarget?.width,
@@ -220,9 +218,9 @@ const App: React.FC = () => {
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const response = await zoomSdk.drawImage({
         imageData,
-        x: config?.media?.renderTarget.width - 100,
+        x: config?.media?.renderTarget.width - 640,
         y: Math.floor(config.media.renderTarget.height / 2) + 100,
-        zIndex: 99,
+        zIndex: 20,
       });
 
       console.log('response draw image => ', response);
