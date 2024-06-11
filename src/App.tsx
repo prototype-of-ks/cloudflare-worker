@@ -169,6 +169,8 @@ const App: React.FC = () => {
           'setVideoMirrorEffect',
           'getVideoState',
           'getMeetingLanguages',
+          'drawImage',
+          'clearImage',
           // events
           'onConnect',
           'onMeeting',
