@@ -272,20 +272,21 @@ const App: React.FC = () => {
         const drawCenteredText = (
           text: string,
           fontSize: number,
-          yOffset: number
+          yOffset: number,
+          fillStyle?: string,
         ) => {
           ctx.font = `${fontSize}px sans-serif`;
           const textMetrics = ctx.measureText(text);
           const textWidth = textMetrics.width;
           const x = (renderWidth - textWidth) / 2; // Calculate horizontal center
           const y = (renderHeight + fontSize) / 2 + yOffset; // Calculate vertical center with offset
-          ctx.fillStyle = 'black';
+          ctx.fillStyle = fillStyle || 'black';
           ctx.fillText(text, x, y);
         };
 
         // Draw texts
-        drawCenteredText('Zoom App Notification', 20, -16);
-        drawCenteredText('Would you like to start AI Companion?', 16, 10);
+        drawCenteredText('Zoom App Notification', 16, -16, 'white');
+        drawCenteredText('Would you like to start AI Companion?', 12, 10, 'black');
 
         canvas.addEventListener('click', () => {
           console.log('click image work!');
