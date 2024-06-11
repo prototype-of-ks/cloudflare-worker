@@ -64,32 +64,6 @@ const App: React.FC = () => {
     const { context } = await zoomSdk.getRunningContext();
     const userContext = await zoomSdk.getUserContext();
 
-    // zoomSdk
-    //   .setVideoState({
-    //     video: true,
-    //   })
-    //   .then(() => {
-    //     zoomSdk
-    //       .setVideoMirrorEffect({
-    //         mirrorMyVideo: false,
-    //       })
-    //       .then(async () => {
-    //         await zoomSdk.runRenderingContext({
-    //           view: 'camera',
-    //         });
-    //         await zoomSdk.drawWebView({
-    //           x: 0,
-    //           y: 0,
-    //           width: 1280,
-    //           height: 720,
-    //           zIndex: 99,
-    //           webviewId: 'webviewId',
-    //         });
-    //       })
-    //       .catch((e) => console.error('setVideoMirrorEffect::error => ', e));
-    //   })
-    //   .catch(console.error);
-
     setUserContext(userContext);
     setRunningContext(context);
   }, []);
@@ -266,7 +240,7 @@ const App: React.FC = () => {
   const drawInCameraNotification = useCallback(async () => {
     if (config?.media?.renderTarget) {
       const renderWidth = 300;
-      const renderHeight = 48;
+      const renderHeight = 64;
 
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
@@ -289,10 +263,10 @@ const App: React.FC = () => {
         // ctx.fillRect(0, 0, canvas.width / ratio, canvas.height / ratio);
 
         ctx.filter = 'blur(10px)'; // Apply blur filter
-        drawRoundedRect(ctx, 0, 0, renderWidth, renderHeight, 40);
+        drawRoundedRect(ctx, 0, 0, renderWidth, renderHeight, 30);
 
         // Reset the filter before drawing text
-        ctx.filter = 'none';
+        // ctx.filter = 'none';
 
         // Draw centered text
         const drawCenteredText = (
