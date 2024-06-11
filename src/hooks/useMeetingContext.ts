@@ -9,6 +9,7 @@ export function useZoomContext(config?: ConfigResponse) {
   const getMeetingLanguages = useCallback(async () => {
     try {
       const { languages } = await zoomSdk.getMeetingLanguages();
+      console.log('languages => ', languages);
       setLanguages(languages);
     } catch (e) {
       console.error('getMeetingLanguages::error => ', e);

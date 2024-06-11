@@ -83,27 +83,26 @@ const App: React.FC = () => {
   }, []);
 
   const renderCameraModeWebview = useCallback(async () => {
-    if (languages.length !== 0) {
-      const drawCameraContext = await zoomSdk.runRenderingContext({
-        view: 'camera',
-      });
-      console.log('drawCameraContext => ', drawCameraContext);
+    // if (languages.length !== 0) {
+    const drawCameraContext = await zoomSdk.runRenderingContext({
+      view: 'camera',
+    });
+    console.log('drawCameraContext => ', drawCameraContext);
 
-      const drawWebviewResponse = await zoomSdk.drawWebView({
-        webviewId: 'camera',
-        x: 0,
-        y: 0,
-        width: config?.media?.renderTarget?.width,
-        height: config?.media?.renderTarget?.height,
-        zIndex: 999,
-      });
+    const drawWebviewResponse = await zoomSdk.drawWebView({
+      webviewId: 'camera',
+      x: 0,
+      y: 0,
+      width: config?.media?.renderTarget?.width,
+      height: config?.media?.renderTarget?.height,
+      zIndex: 999,
+    });
 
-      console.log('drawWebviewResponse => ', drawWebviewResponse);
-    }
+    console.log('drawWebviewResponse => ', drawWebviewResponse);
+    // }
   }, [
     config?.media?.renderTarget?.height,
     config?.media?.renderTarget?.width,
-    languages.length,
   ]);
 
   const renderImmersiveModeWebview = useCallback(async () => {
