@@ -1,8 +1,12 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 64px 32px 0;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -126,4 +130,8 @@
 
 .separator {
   margin: 0 5px; /* Adjust spacing as needed */
+}
+
+.zoom-notification-header {
+  @apply bg-[#4c47cc] flex justify-between items-center h-16 px-4 fixed top-0 left-0 w-full;
 }

@@ -6,6 +6,7 @@ import zoomSdk, {
 import { useEffect, useState, useCallback } from 'react';
 import { useDev } from './hooks/useDev';
 import { useTimezone } from './hooks/useTimezone';
+import { useZoomContext } from './hooks/useMeetingContext';
 import ImmersiveMode from './components/ImmersiveMode';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,6 +19,7 @@ import {
 import { toast } from 'sonner';
 import { Toaster } from '@/components/ui/sonner';
 import './App.css';
+import MeetingMode from './components/MeetingMode';
 
 // type Media = {
 //   audio?: {
@@ -32,8 +34,15 @@ const App: React.FC = () => {
   const { localTime, timeZone } = useTimezone();
   const { isDev } = useDev();
   const [config, setConfig] = useState<ConfigResponse>();
+  const { languages, meetingUUID } = useZoomContext(config);
   const [runningContext, setRunningContext] = useState<RunningContext>();
-  const [userContext, setUserContext] = useState<GetUserContextResponse>();
+  const [userContext, setUserContext] = useState<GetUserContextResponse>({
+    role: 'host',
+    status: 'authorized',
+    screenName: '',
+    participantUUID: '',
+    participantId: '',
+  });
 
   const init = useCallback(async () => {
     const { context } = await zoomSdk.getRunningContext();
@@ -50,7 +59,7 @@ const App: React.FC = () => {
           })
           .then(async () => {
             await zoomSdk.runRenderingContext({
-              view: 'camera'
+              view: 'camera',
             });
             await zoomSdk.drawWebView({
               x: 0,
@@ -58,7 +67,7 @@ const App: React.FC = () => {
               width: 1280,
               height: 720,
               zIndex: 99,
-              webviewId: 'webviewId'
+              webviewId: 'webviewId',
             });
           })
           .catch((e) => console.error('setVideoMirrorEffect::error => ', e));
@@ -123,6 +132,10 @@ const App: React.FC = () => {
     });
   }, []);
 
+  const userRole = `${userContext?.role
+    .substring(0, 1)
+    .toUpperCase()}${userContext?.role.substring(1)}`;
+
   useEffect(() => {
     if (isDev) {
       console.warn('The Zoom Apps SDK is not supported in Dev mode');
@@ -177,9 +190,30 @@ const App: React.FC = () => {
     <>
       {(runningContext === 'inMeeting' || isDev) && (
         <>
-          <h3 className="text-[24px] font-bold my-4">Zoom App</h3>
-          <div className="flex flex-col gap-4">
-            <Card className="w-[350px] text-left">
+          <header className="zoom-notification-header">
+            <div className="flex items-center gap-2">
+              {/* <SunOutlined className="night-mode-shift-icon w-4 h-4 text-white" /> */}
+              <span className="text-white">
+                Meeting ID: {meetingUUID}
+              </span>
+            </div>
+            <div className="flex flex-row items-center gap-2">
+              <div className="flex flex-row items-center gap-2 bg-[#5a56d0] p-2 rounded-md cursor-pointer">
+                <div className="flex items-center justify-center w-5 h-5 rounded-full bg-[#9c9ae3] text-center">
+                  <span className="w-3 h-3 bg-green-600 inline-block rounded-full"></span>
+                </div>
+                <span className="text-white">Cloud Recording</span>
+              </div>
+              <div className="bg-[#827fdb] rounded-md h-10 flex items-center px-2">
+                MK
+              </div>
+            </div>
+          </header>
+          {/* <CloseOutlined className="absolute right-5 top-4 cursor-pointer" /> */}
+          <MeetingMode />
+          {/* <h3 className="text-[24px] font-bold my-4">Zoom App</h3> */}
+          <div className="flex flex-col gap-4 w-full">
+            <Card className="text-left">
               <CardHeader>
                 <CardTitle>Camera Mode</CardTitle>
                 <CardDescription>Draw Webview in Camera Mode</CardDescription>
@@ -196,7 +230,7 @@ const App: React.FC = () => {
                 <Button onClick={renderCameraModeWebview}>Render</Button>
               </CardFooter>
             </Card>
-            <Card className="w-[350px] text-left">
+            <Card className="text-left">
               <CardHeader>
                 <CardTitle>Immersive Mode</CardTitle>
                 <CardDescription>
@@ -210,12 +244,10 @@ const App: React.FC = () => {
                 <Button onClick={renderImmersiveModeWebview}>Render</Button>
               </CardFooter>
             </Card>
-            <Card className="w-[350px] text-left">
+            <Card className="text-left">
               <CardHeader>
                 <CardTitle>Notification</CardTitle>
-                <CardDescription>
-                  Show Notification in several ways
-                </CardDescription>
+                <CardDescription>Show Notifications</CardDescription>
               </CardHeader>
               <CardFooter className="flex flex-col items-start gap-2">
                 <Button onClick={showZoomClientNotification}>
@@ -240,19 +272,11 @@ const App: React.FC = () => {
             <div className="gradient-background font-style user-context-wrapper">
               <div className="user-name">{userContext?.screenName}</div>
               <div className="user-role">
-                <span>{userContext?.role || 'N/A'}</span>
+                <span>{userRole || 'N/A'}</span>
                 <span className="separator">|</span>
-                <span>Manager, Release Engineer 2 </span>
+                <span>Your Job Title Here</span>
               </div>
               <div className="additional-context-wrapper">
-                <span className="context-section">
-                  <span>📢</span>
-                  <span>Speaking</span>
-                </span>
-                <span className="context-section">
-                  <span>🤖</span>
-                  <span>AI Companion</span>
-                </span>
                 <span className="context-section">
                   <span>📍</span>
                   <span>{timeZone}</span>
@@ -260,6 +284,10 @@ const App: React.FC = () => {
                 <span className="context-section">
                   <span>|</span>
                   <span>Joined at {localTime}</span>
+                </span>
+                <span className="context-section">
+                  <span>💬</span>
+                  <span>{languages.join(' ,')}</span>
                 </span>
               </div>
             </div>
