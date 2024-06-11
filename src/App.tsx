@@ -218,7 +218,7 @@ const App: React.FC = () => {
     }
     if (config?.media?.renderTarget) {
       const renderWidth = 400;
-      const renderHeight = 100;
+      const renderHeight = 150;
 
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
