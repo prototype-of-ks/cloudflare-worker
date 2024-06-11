@@ -265,8 +265,8 @@ const App: React.FC = () => {
 
   const drawInCameraNotification = useCallback(async () => {
     if (config?.media?.renderTarget) {
-      const renderWidth = 400;
-      const renderHeight = 64;
+      const renderWidth = 300;
+      const renderHeight = 48;
 
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
@@ -320,7 +320,7 @@ const App: React.FC = () => {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const response = await zoomSdk.drawImage({
           imageData,
-          x: Math.floor(config.media.renderTarget.width / 2) - 200,
+          x: Math.floor(config.media.renderTarget.width / 2) - 300,
           y: 20,
           zIndex: 30,
         });
