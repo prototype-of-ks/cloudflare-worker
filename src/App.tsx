@@ -188,7 +188,13 @@ const App: React.FC = () => {
     if (userContext) console.log('userContext => ', userContext);
   }, [config, runningContext, userContext]);
 
-  const drawImage = async () => {
+  const drawImage = async ({
+    title,
+    text,
+  }: {
+    title?: string;
+    text?: string;
+  }) => {
     // Function to draw a rounded rectangle
     function drawRoundedRect(
       ctx: CanvasRenderingContext2D,
@@ -245,11 +251,11 @@ const App: React.FC = () => {
 
         // Draw "vote 1 for " text
         ctx.font = '28px sans-serif';
-        ctx.fillText('Vote 1', 10, 50);
+        ctx.fillText(title || 'Vote 1', 10, 50);
 
         ctx.font = '40px sans-serif';
         ctx.fillStyle = 'black';
-        ctx.fillText('Hello World', 10, 100);
+        ctx.fillText(text || 'Hello World', 10, 100);
 
         canvas.addEventListener('click', () => {
           console.log('click image work!');
@@ -354,7 +360,16 @@ const App: React.FC = () => {
                 {/* <Button variant="outline" onClick={closeRenderingContext}>
                   Clear
                 </Button> */}
-                <Button onClick={drawImage}>Vote</Button>
+                <Button
+                  onClick={() =>
+                    drawImage({
+                      title: 'Vote',
+                      text: 'Yes',
+                    })
+                  }
+                >
+                  Vote
+                </Button>
               </CardFooter>
             </Card>
           </div>
