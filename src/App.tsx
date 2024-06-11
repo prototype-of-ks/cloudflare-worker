@@ -289,15 +289,29 @@ const App: React.FC = () => {
         // ctx.fillRect(0, 0, canvas.width / ratio, canvas.height / ratio);
 
         ctx.filter = 'blur(10px)'; // Apply blur filter
-        drawRoundedRect(ctx, 0, 0, renderWidth, renderHeight, 20);
+        drawRoundedRect(ctx, 0, 0, renderWidth, renderHeight, 40);
 
-        // Draw "vote 1 for " text
-        ctx.font = '24px sans-serif';
-        ctx.fillText('Zoom App Notification', 10, 20);
+        // Reset the filter before drawing text
+        ctx.filter = 'none';
 
-        ctx.font = '16px sans-serif';
-        ctx.fillStyle = 'black';
-        ctx.fillText('Would you like to start AI Companion?', 10, 40);
+        // Draw centered text
+        const drawCenteredText = (
+          text: string,
+          fontSize: number,
+          yOffset: number
+        ) => {
+          ctx.font = `${fontSize}px sans-serif`;
+          const textMetrics = ctx.measureText(text);
+          const textWidth = textMetrics.width;
+          const x = (renderWidth - textWidth) / 2; // Calculate horizontal center
+          const y = (renderHeight + fontSize) / 2 + yOffset; // Calculate vertical center with offset
+          ctx.fillStyle = 'black';
+          ctx.fillText(text, x, y);
+        };
+
+        // Draw texts
+        drawCenteredText('Zoom App Notification', 20, -16);
+        drawCenteredText('Would you like to start AI Companion?', 16, 10);
 
         canvas.addEventListener('click', () => {
           console.log('click image work!');
