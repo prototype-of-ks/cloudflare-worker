@@ -338,6 +338,8 @@ const App: React.FC = () => {
         gradient.addColorStop(0, 'rgba(0,0,0,0.8)');
         gradient.addColorStop(1, 'rgba(0,0,0,0.2)');
         ctx.fillStyle = gradient;
+        ctx.filter = 'blur(10px)';
+
         drawRoundedRect(ctx, 0, 0, renderWidth, renderHeight, 10);
 
         // Draw user name
@@ -384,7 +386,7 @@ const App: React.FC = () => {
         const response = await zoomSdk.drawImage({
           imageData,
           x: 0,
-          y: config.media.renderTarget.height - renderHeight - 40,
+          y: config.media.renderTarget.height - renderHeight - 100,
           zIndex: 30,
         });
 
@@ -441,10 +443,14 @@ const App: React.FC = () => {
                 >
                   Clear
                 </Button>
-                <Button onClick={async () => {
-                  await renderCameraModeWebview();
-                  await drawNameTag();
-                }}>Render</Button>
+                <Button
+                  onClick={async () => {
+                    await renderCameraModeWebview();
+                    await drawNameTag();
+                  }}
+                >
+                  Render
+                </Button>
               </CardFooter>
             </Card>
             <Card className="text-left">
