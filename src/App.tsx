@@ -474,11 +474,11 @@ const App: React.FC = () => {
         drawRoundedRect(ctx, 0, 0, renderWidth, renderHeight, 30);
 
         // Draw "vote 1 for " text
-        ctx.font = '14px sans-serif';
+        ctx.font = '12px sans-serif';
         ctx.fillStyle = 'rgb(209, 213, 219)';
         ctx.fillText(title || 'Vote', 10, 20);
 
-        ctx.font = '18px sans-serif';
+        ctx.font = '16px sans-serif';
         ctx.fillStyle = 'black';
         ctx.fillText(text || 'Hello World', 10, 24);
 
