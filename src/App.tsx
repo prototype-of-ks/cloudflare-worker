@@ -313,7 +313,7 @@ const App: React.FC = () => {
 
   const drawNameTag = useCallback(async () => {
     if (config?.media?.renderTarget) {
-      const renderWidth = 300;
+      const renderWidth = config.media.renderTarget.width;
       const renderHeight = 100; // Adjusted to fit the content
 
       const canvas = document.createElement('canvas');
@@ -335,10 +335,11 @@ const App: React.FC = () => {
           renderWidth,
           renderHeight
         );
-        gradient.addColorStop(0, 'rgba(0,0,0,0.8)');
-        gradient.addColorStop(1, 'rgba(0,0,0,0.2)');
+        gradient.addColorStop(0, 'rgba(0,0,0,0.7)');
+        gradient.addColorStop(1, 'transparent');
+
         ctx.fillStyle = gradient;
-        ctx.filter = 'blur(10px)';
+        ctx.filter = 'blur(20px)';
 
         drawRoundedRect(ctx, 0, 0, renderWidth, renderHeight, 10);
 
