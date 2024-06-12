@@ -223,11 +223,11 @@ const App: React.FC = () => {
 
         // Draw "vote 1 for " text
         ctx.font = '24px sans-serif';
-        ctx.fillText(title || 'Title Here', 10, 20);
+        ctx.fillText(title || 'Title Here', 10, 30);
 
         ctx.font = '28px sans-serif';
         ctx.fillStyle = 'black';
-        ctx.fillText(text || 'Hello World', 10, 50);
+        ctx.fillText(text || 'Hello World', 10, 80);
 
         canvas.addEventListener('click', () => {
           console.log('click image work!');
@@ -476,11 +476,11 @@ const App: React.FC = () => {
         // Draw "vote 1 for " text
         ctx.font = '12px sans-serif';
         ctx.fillStyle = 'rgb(209, 213, 219)';
-        ctx.fillText(title || 'Vote', 10, 24);
+        ctx.fillText(text || 'Vote', 10, 24);
 
         ctx.font = '16px sans-serif';
         ctx.fillStyle = 'black';
-        ctx.fillText(text || 'Hello World', 10, 48);
+        ctx.fillText(title || 'Hello World', 10, 40);
 
         canvas.addEventListener('click', () => {
           console.log('click image work!');
@@ -489,8 +489,8 @@ const App: React.FC = () => {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const response = await zoomSdk.drawImage({
           imageData,
-          x: config?.media?.renderTarget.width - 700,
-          y: Math.floor(config.media.renderTarget.height / 2) - 200,
+          x: config?.media?.renderTarget.width - 240,
+          y: Math.floor(config.media.renderTarget.height / 2) + 100,
           zIndex: 20,
         });
 
