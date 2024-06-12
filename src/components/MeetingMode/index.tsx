@@ -19,7 +19,7 @@ const MeetingMode: React.FC = () => {
 
       <div className="my-4">
         <div className="flex flex-col gap-2 bg-[#FAD2B4] opacity-89 rounded-md p-4">
-          <span className="bg-[#cc8634] px-2 rounded-2xl inline-flex text-white">
+          <span className="bg-[#cc8634] px-2 rounded-2xl inline-flex text-white w-[48px]">
             Tips
           </span>
           <span className="text-left">
