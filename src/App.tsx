@@ -385,7 +385,7 @@ const App: React.FC = () => {
 
         drawIconText('📍', timeZone || '', 10, 65);
         drawIconText('|', `Joined at ${localTime}`, 120, 65);
-        drawIconText('💬', languages.join(', '), 200, 65);
+        drawIconText('💬', languages.join(', '), 300, 65);
 
         canvas.addEventListener('click', () => {
           console.log('Canvas clicked!');
@@ -421,8 +421,8 @@ const App: React.FC = () => {
     success?: boolean;
   }) => {
     if (config?.media?.renderTarget) {
-      const renderWidth = 300;
-      const renderHeight = 40;
+      const renderWidth = 200;
+      const renderHeight = 64;
 
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
@@ -433,7 +433,7 @@ const App: React.FC = () => {
       canvas.style.width = canvas.width + 'px';
       canvas.style.height = canvas.height + 'px';
       canvas.style.background = 'black';
-      //sucess ? 'rgb(187, 247, 208)' : 'rgb(254, 202, 202)'
+
       canvas.width *= ratio;
       canvas.height *= ratio;
 
@@ -451,11 +451,11 @@ const App: React.FC = () => {
 
         // Draw "vote 1 for " text
         ctx.font = '14px sans-serif';
-        ctx.fillText(title || 'Vote', 10, 50);
+        ctx.fillText(title || 'Vote', 10, 20);
 
         ctx.font = '24px sans-serif';
         ctx.fillStyle = 'black';
-        ctx.fillText(text || 'Hello World', 10, 100);
+        ctx.fillText(text || 'Hello World', 10, 50);
 
         canvas.addEventListener('click', () => {
           console.log('click image work!');

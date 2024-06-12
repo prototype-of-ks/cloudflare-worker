@@ -262,13 +262,16 @@ const VotingTable: React.FC<VotingTableProps> = ({ drawImage }) => {
                 const idea = original.idea;
                 original.joinedAICompanion = !original.joinedAICompanion;
                 update({});
-                drawImage({
+
+                const payload = {
                   title: idea,
                   text: original.joinedAICompanion
                     ? 'You have voted for this idea'
                     : 'You have removed your vote',
                   success: original.joinedAICompanion,
-                });
+                };
+                console.log('payload => ', payload)
+                drawImage(payload);
               }}
               className={classNames(
                 'px-4 rounded-2xl',
