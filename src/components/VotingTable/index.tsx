@@ -266,9 +266,9 @@ const VotingTable: React.FC<VotingTableProps> = ({ drawImage }) => {
                 const payload = {
                   title: idea,
                   text: original.joinedAICompanion
-                    ? 'You have voted for this idea'
+                    ? 'You agreed with this idea'
                     : 'You have removed your vote',
-                  success: original.joinedAICompanion,
+                  success: true,
                 };
                 console.log('payload => ', payload)
                 drawImage(payload);
@@ -307,8 +307,19 @@ const VotingTable: React.FC<VotingTableProps> = ({ drawImage }) => {
               type="button"
               variant="ghost"
               onClick={() => {
+                const idea = original.idea;
                 original.allowedCaption = !original.allowedCaption;
                 update({});
+
+                const payload = {
+                  title: idea,
+                  text: original.allowedCaption
+                    ? 'You agreed with this idea'
+                    : 'You have removed your vote',
+                  success: false,
+                };
+                console.log('payload => ', payload)
+                drawImage(payload);
               }}
               className={classNames(
                 'px-4 rounded-2xl',

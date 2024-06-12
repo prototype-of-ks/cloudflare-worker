@@ -3,7 +3,7 @@ import zoomSdk, {
   RunningContext,
   GetUserContextResponse,
 } from '@zoom/appssdk';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useDev } from './hooks/useDev';
 import { useTimezone } from './hooks/useTimezone';
 import { useZoomContext } from './hooks/useMeetingContext';
@@ -60,6 +60,9 @@ const App: React.FC = () => {
     participantId: '',
   });
   const [voteMessage, setVoteMessage] = useState<string>();
+
+  const votingTableImageId = useRef({ imageId: '' });
+  const textImageId = useRef({ imageId: '' });
 
   const init = useCallback(async () => {
     const { context } = await zoomSdk.getRunningContext();
@@ -226,6 +229,13 @@ const App: React.FC = () => {
         });
 
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+        if (textImageId.current.imageId) {
+          zoomSdk
+            .clearImage({ imageId: textImageId.current.imageId })
+            .catch(console.error);
+        }
+
         const response = await zoomSdk.drawImage({
           imageData,
           x: config?.media?.renderTarget.width - 500,
@@ -233,7 +243,8 @@ const App: React.FC = () => {
           zIndex: 20,
         });
 
-        console.log('response draw image => ', response);
+        textImageId.current = { imageId: response.imageId };
+        console.log('response draw image => ', response.imageId);
       }
     }
   };
@@ -385,13 +396,20 @@ const App: React.FC = () => {
 
         drawIconText('📍', timeZone || '', 10, 65);
         drawIconText('|', `Joined at ${localTime}`, 120, 65);
-        drawIconText('💬', languages.join(', '), 300, 65);
+        drawIconText('💬', languages.join(', '), 280, 65);
 
         canvas.addEventListener('click', () => {
           console.log('Canvas clicked!');
         });
 
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+        if (votingTableImageId.current.imageId) {
+          zoomSdk
+            .clearImage({ imageId: votingTableImageId.current.imageId })
+            .catch(console.error);
+        }
+
         const response = await zoomSdk.drawImage({
           imageData,
           x: 0,
@@ -399,7 +417,8 @@ const App: React.FC = () => {
           zIndex: 30,
         });
 
-        console.log('response draw image => ', response);
+        votingTableImageId.current = { imageId: response.imageId };
+        console.log('response draw image => ', response.imageId);
       }
     }
   }, [
@@ -442,18 +461,18 @@ const App: React.FC = () => {
 
         // Create a transparent rectangle with a blur effect
         ctx.fillStyle = success
-          ? 'rgba(187, 247, 208, 0.4)'
-          : 'rgb(254, 202, 202, 0.4)';
+          ? 'rgba(34, 197, 94, 0.4)'
+          : 'rgb(239, 68, 68, 0.4)';
         // ctx.fillRect(0, 0, canvas.width / ratio, canvas.height / ratio);
 
         ctx.filter = 'blur(10px)'; // Apply blur filter
-        drawRoundedRect(ctx, 0, 0, renderWidth, renderHeight, 20);
+        drawRoundedRect(ctx, 0, 0, renderWidth, renderHeight, 30);
 
         // Draw "vote 1 for " text
         ctx.font = '14px sans-serif';
         ctx.fillText(title || 'Vote', 10, 20);
 
-        ctx.font = '24px sans-serif';
+        ctx.font = '18px sans-serif';
         ctx.fillStyle = 'black';
         ctx.fillText(text || 'Hello World', 10, 50);
 
