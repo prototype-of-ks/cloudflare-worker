@@ -441,11 +441,11 @@ const App: React.FC = () => {
   const drawVote = async ({
     title,
     text,
-    success = true,
+    type = 'cancel',
   }: {
     title?: string;
     text?: string;
-    success?: boolean;
+    type?: 'vote' | 'downvote' | 'cancel';
   }) => {
     if (config?.media?.renderTarget) {
       const renderWidth = 200;
@@ -467,10 +467,16 @@ const App: React.FC = () => {
       if (ctx) {
         ctx.scale(ratio, ratio);
 
+        if (type === 'cancel') {
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+          ctx.filter = 'blur(10px)'; // Apply blur filter
+        } else if (type === 'vote') {
+          ctx.fillStyle = 'rgb(34, 197, 94)';
+        } else {
+          ctx.fillStyle = 'rgb(239, 68, 68)';
+        }
+
         // Create a transparent rectangle with a blur effect
-        ctx.fillStyle = success
-          ? 'rgba(34, 197, 94, 0.4)'
-          : 'rgb(239, 68, 68, 0.4)';
         // ctx.fillRect(0, 0, canvas.width / ratio, canvas.height / ratio);
 
         ctx.filter = 'blur(10px)'; // Apply blur filter
@@ -483,7 +489,7 @@ const App: React.FC = () => {
 
         ctx.font = '16px sans-serif';
         ctx.fillStyle = 'black';
-        ctx.fillText(title || 'Hello World', 10, 36);
+        ctx.fillText(title || 'Hello World', 10, 40);
 
         canvas.addEventListener('click', () => {
           console.log('click image work!');

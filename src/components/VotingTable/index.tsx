@@ -172,7 +172,7 @@ interface VotingTableProps {
   drawImage: (options: {
     title?: string;
     text?: string;
-    success?: boolean;
+    type?: 'vote' | 'downvote' | 'cancel';
   }) => void;
 }
 
@@ -262,16 +262,14 @@ const VotingTable: React.FC<VotingTableProps> = ({ drawImage }) => {
                 const idea = original.idea;
                 original.joinedAICompanion = !original.joinedAICompanion;
                 update({});
-
-                const payload = {
+    
+                drawImage({
                   title: idea,
                   text: original.joinedAICompanion
                     ? 'You vote for this idea!'
-                    : 'You have removed your vote',
-                  success: true,
-                };
-                console.log('payload => ', payload)
-                drawImage(payload);
+                    : 'You have removed your vote.',
+                  type: original.joinedAICompanion ? 'vote' : 'cancel',
+                });
               }}
               className={classNames(
                 'px-4 rounded-2xl',
@@ -310,16 +308,13 @@ const VotingTable: React.FC<VotingTableProps> = ({ drawImage }) => {
                 const idea = original.idea;
                 original.allowedCaption = !original.allowedCaption;
                 update({});
-
-                const payload = {
+                drawImage({
                   title: idea,
                   text: original.allowedCaption
-                    ? 'You downvote for this idea.'
-                    : 'You have removed your vote',
-                  success: false,
-                };
-                console.log('payload => ', payload)
-                drawImage(payload);
+                    ? 'You downvote for this idea!'
+                    : 'You have removed your downvote.',
+                  type: original.allowedCaption ? 'downvote' : 'cancel',
+                });
               }}
               className={classNames(
                 'px-4 rounded-2xl',
