@@ -424,10 +424,8 @@ const App: React.FC = () => {
 
       canvas.style.width = canvas.width + 'px';
       canvas.style.height = canvas.height + 'px';
-      canvas.style.background = success
-        ? 'rgb(187, 247, 208)'
-        : 'rgb(254, 202, 202)';
-
+      canvas.style.background = 'black';
+      //sucess ? 'rgb(187, 247, 208)' : 'rgb(254, 202, 202)' 
       canvas.width *= ratio;
       canvas.height *= ratio;
 
@@ -435,7 +433,7 @@ const App: React.FC = () => {
         ctx.scale(ratio, ratio);
 
         // Create a transparent rectangle with a blur effect
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.fillStyle = success ? 'rgba(187, 247, 208, 0.4)' : 'rgb(254, 202, 202, 0.4)' ;
         // ctx.fillRect(0, 0, canvas.width / ratio, canvas.height / ratio);
 
         ctx.filter = 'blur(10px)'; // Apply blur filter
@@ -443,7 +441,7 @@ const App: React.FC = () => {
 
         // Draw "vote 1 for " text
         ctx.font = '14px sans-serif';
-        ctx.fillText(title || 'Vote 1', 10, 50);
+        ctx.fillText(title || 'Vote', 10, 50);
 
         ctx.font = '24px sans-serif';
         ctx.fillStyle = 'black';
