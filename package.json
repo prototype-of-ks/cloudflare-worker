@@ -23,6 +23,7 @@
     "@tanstack/react-table": "^8.17.3",
     "@zoom/appssdk": "^0.16.19",
     "class-variance-authority": "^0.7.0",
+    "classnames": "^2.5.1",
     "clsx": "^2.1.1",
     "moment-timezone": "^0.5.45",
     "next-themes": "^0.3.0",

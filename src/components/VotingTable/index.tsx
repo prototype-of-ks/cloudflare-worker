@@ -47,6 +47,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../ui/dialog';
+import classNames from 'classnames';
 
 export function NotificationDialog({
   open,
@@ -134,26 +135,26 @@ const data: ZoomParticipant[] = [
     allowedCaption: false,
     idea: 'Text box to video',
   },
-//   {
-//     id: 'bhqecj4p',
-//     amount: 721,
-//     status: 'failed',
-//     email: 'carmella@hotmail.com',
-//     username: 'Jack Yang',
-//     joinedAICompanion: true,
-//     allowedCaption: false,
-//     idea: 'Idea 5',
-//   },
-//   {
-//     id: 'bhqecj4a',
-//     amount: 721,
-//     status: 'failed',
-//     email: 'carmella@hotmail.com',
-//     username: 'Mark Ke',
-//     joinedAICompanion: true,
-//     allowedCaption: false,
-//     idea: 'Idea 6',
-//   },
+  //   {
+  //     id: 'bhqecj4p',
+  //     amount: 721,
+  //     status: 'failed',
+  //     email: 'carmella@hotmail.com',
+  //     username: 'Jack Yang',
+  //     joinedAICompanion: true,
+  //     allowedCaption: false,
+  //     idea: 'Idea 5',
+  //   },
+  //   {
+  //     id: 'bhqecj4a',
+  //     amount: 721,
+  //     status: 'failed',
+  //     email: 'carmella@hotmail.com',
+  //     username: 'Mark Ke',
+  //     joinedAICompanion: true,
+  //     allowedCaption: false,
+  //     idea: 'Idea 6',
+  //   },
 ];
 
 export type ZoomParticipant = {
@@ -167,7 +168,15 @@ export type ZoomParticipant = {
   idea: string;
 };
 
-const VotingTable: React.FC = () => {
+interface VotingTableProps {
+  drawImage: (options: {
+    title?: string;
+    text?: string;
+    success?: boolean;
+  }) => void;
+}
+
+const VotingTable: React.FC<VotingTableProps> = ({ drawImage }) => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -217,11 +226,7 @@ const VotingTable: React.FC = () => {
         return (
           <div className="flex flex-row items-center gap-2">
             <Avatar>
-              <AvatarImage
-                alt="@shadcn"
-                width="20"
-                height="20"
-              />
+              <AvatarImage alt="@shadcn" width="20" height="20" />
               <AvatarFallback>{`${username
                 .split(/\s/)[0][0]
                 .toUpperCase()}${username
@@ -252,12 +257,27 @@ const VotingTable: React.FC = () => {
           <div className="flex items-center">
             <Button
               type="button"
+              variant="ghost"
               onClick={() => {
+                const idea = original.idea;
                 original.joinedAICompanion = !original.joinedAICompanion;
                 update({});
+                drawImage({
+                  title: idea,
+                  text: original.joinedAICompanion
+                    ? 'You have voted for this idea'
+                    : 'You have removed your vote',
+                  success: original.joinedAICompanion,
+                });
               }}
+              className={classNames(
+                'px-4 rounded-2xl',
+                original.joinedAICompanion
+                  ? 'border-green-500 bg-green-200 hover:bg-green-300 hover:border-green-500'
+                  : 'border-gray-200 hover:border-gray-300'
+              )}
             >
-              {original.joinedAICompanion ? 'Active' : 'Inactive'}
+              👍
             </Button>
           </div>
         );
@@ -282,32 +302,24 @@ const VotingTable: React.FC = () => {
           <div className="flex items-center">
             <Button
               type="button"
+              variant="ghost"
               onClick={() => {
                 original.allowedCaption = !original.allowedCaption;
                 update({});
               }}
+              className={classNames(
+                'px-4 rounded-2xl',
+                original.allowedCaption
+                  ? 'border-red-500 bg-red-200 hover:bg-red-300 hover:border-red-500'
+                  : 'border-gray-200 hover:border-gray-300'
+              )}
             >
-              {original.allowedCaption ? 'Active' : 'Inactive'}
+              👎
             </Button>
           </div>
         );
       },
     },
-    // {
-    //   accessorKey: 'amount',
-    //   header: () => <div className="text-right">Amount</div>,
-    //   cell: ({ row }) => {
-    //     const amount = parseFloat(row.getValue('amount'));
-
-    //     // Format the amount as a dollar amount
-    //     const formatted = new Intl.NumberFormat('en-US', {
-    //       style: 'currency',
-    //       currency: 'USD',
-    //     }).format(amount);
-
-    //     return <div className="text-right font-medium">{formatted}</div>;
-    //   },
-    // },
     {
       id: 'actions',
       enableHiding: false,

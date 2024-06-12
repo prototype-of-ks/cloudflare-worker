@@ -335,7 +335,7 @@ const App: React.FC = () => {
           renderWidth,
           renderHeight
         );
-        gradient.addColorStop(0, 'rgba(0,0,0,0.7)');
+        gradient.addColorStop(0, 'rgba(0,0,0,0.2)');
         gradient.addColorStop(1, 'transparent');
 
         ctx.fillStyle = gradient;
@@ -369,10 +369,10 @@ const App: React.FC = () => {
           x: number,
           y: number
         ) => {
-          ctx.font = '16px sans-serif';
-          ctx.fillText(icon, x, y);
           ctx.font = '12px sans-serif';
-          ctx.fillText(text, x + 20, y);
+          ctx.fillText(icon, x, y);
+          ctx.font = '14px sans-serif';
+          ctx.fillText(text, x + 12, y);
         };
 
         drawIconText('📍', timeZone || '', 10, 65);
@@ -402,6 +402,69 @@ const App: React.FC = () => {
     localTime,
     languages,
   ]);
+
+  const drawVote = async ({
+    title,
+    text,
+    success = true,
+  }: {
+    title?: string;
+    text?: string;
+    success?: boolean;
+  }) => {
+    if (config?.media?.renderTarget) {
+      const renderWidth = 300;
+      const renderHeight = 40;
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const ratio = window.devicePixelRatio;
+      canvas.width = renderWidth;
+      canvas.height = renderHeight;
+
+      canvas.style.width = canvas.width + 'px';
+      canvas.style.height = canvas.height + 'px';
+      canvas.style.background = success
+        ? 'rgb(187, 247, 208)'
+        : 'rgb(254, 202, 202)';
+
+      canvas.width *= ratio;
+      canvas.height *= ratio;
+
+      if (ctx) {
+        ctx.scale(ratio, ratio);
+
+        // Create a transparent rectangle with a blur effect
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        // ctx.fillRect(0, 0, canvas.width / ratio, canvas.height / ratio);
+
+        ctx.filter = 'blur(10px)'; // Apply blur filter
+        drawRoundedRect(ctx, 0, 0, renderWidth, renderHeight, 20);
+
+        // Draw "vote 1 for " text
+        ctx.font = '14px sans-serif';
+        ctx.fillText(title || 'Vote 1', 10, 50);
+
+        ctx.font = '24px sans-serif';
+        ctx.fillStyle = 'black';
+        ctx.fillText(text || 'Hello World', 10, 100);
+
+        canvas.addEventListener('click', () => {
+          console.log('click image work!');
+        });
+
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const response = await zoomSdk.drawImage({
+          imageData,
+          x: config?.media?.renderTarget.width - 500,
+          y: Math.floor(config.media.renderTarget.height / 2) - 100,
+          zIndex: 20,
+        });
+
+        console.log('response draw image => ', response);
+      }
+    }
+  };
 
   return (
     <>
@@ -523,8 +586,8 @@ const App: React.FC = () => {
         runningContext={runningContext}
         userContext={userContext}
       />
-      <VotingTable />
-      {(runningContext === 'inCamera' || isDev) && (
+      <VotingTable drawImage={drawVote} />
+      {/* {(runningContext === 'inCamera' || isDev) && (
         <>
           <div className="card">
             <div className="gradient-background font-style user-context-wrapper">
@@ -551,7 +614,7 @@ const App: React.FC = () => {
             </div>
           </div>
         </>
-      )}
+      )} */}
     </>
   );
 };
