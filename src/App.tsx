@@ -189,9 +189,14 @@ const App: React.FC = () => {
     title?: string;
     text?: string;
   }) => {
+    if (!text && textImageId.current.imageId) {
+      zoomSdk.clearImage({ imageId: textImageId.current.imageId }).catch(console.error);
+      return;
+    }
+
     if (config?.media?.renderTarget) {
       const renderWidth = 400;
-      const renderHeight = 150;
+      const renderHeight = 100;
 
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
@@ -251,7 +256,7 @@ const App: React.FC = () => {
 
   const drawInCameraNotification = useCallback(async () => {
     if (config?.media?.renderTarget) {
-      const renderWidth = 300;
+      const renderWidth = 260;
       const renderHeight = 64;
 
       const canvas = document.createElement('canvas');
@@ -441,7 +446,7 @@ const App: React.FC = () => {
   }) => {
     if (config?.media?.renderTarget) {
       const renderWidth = 200;
-      const renderHeight = 64;
+      const renderHeight = 42;
 
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
@@ -470,11 +475,12 @@ const App: React.FC = () => {
 
         // Draw "vote 1 for " text
         ctx.font = '14px sans-serif';
+        ctx.fillStyle = 'rgb(209, 213, 219)';
         ctx.fillText(title || 'Vote', 10, 20);
 
         ctx.font = '18px sans-serif';
         ctx.fillStyle = 'black';
-        ctx.fillText(text || 'Hello World', 10, 50);
+        ctx.fillText(text || 'Hello World', 10, 24);
 
         canvas.addEventListener('click', () => {
           console.log('click image work!');
@@ -483,8 +489,8 @@ const App: React.FC = () => {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const response = await zoomSdk.drawImage({
           imageData,
-          x: config?.media?.renderTarget.width - 500,
-          y: Math.floor(config.media.renderTarget.height / 2) - 100,
+          x: config?.media?.renderTarget.width - 540,
+          y: Math.floor(config.media.renderTarget.height / 2) - 20,
           zIndex: 20,
         });
 
