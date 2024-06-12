@@ -274,7 +274,7 @@ const App: React.FC = () => {
           text: string,
           fontSize: number,
           yOffset: number,
-          fillStyle?: string,
+          fillStyle?: string
         ) => {
           ctx.font = `${fontSize}px sans-serif`;
           const textMetrics = ctx.measureText(text);
@@ -287,7 +287,12 @@ const App: React.FC = () => {
 
         // Draw texts
         drawCenteredText('Zoom App Notification', 16, -16, 'white');
-        drawCenteredText('Would you like to start AI Companion?', 12, 10, 'black');
+        drawCenteredText(
+          'Would you like to start AI Companion?',
+          12,
+          10,
+          'black'
+        );
 
         canvas.addEventListener('click', () => {
           console.log('click image work!');
@@ -305,6 +310,95 @@ const App: React.FC = () => {
       }
     }
   }, [config?.media?.renderTarget]);
+
+  const drawNameTag = useCallback(async () => {
+    if (config?.media?.renderTarget) {
+      const renderWidth = 300;
+      const renderHeight = 100; // Adjusted to fit the content
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const ratio = window.devicePixelRatio;
+      canvas.width = renderWidth * ratio;
+      canvas.height = renderHeight * ratio;
+
+      canvas.style.width = renderWidth + 'px';
+      canvas.style.height = renderHeight + 'px';
+
+      if (ctx) {
+        ctx.scale(ratio, ratio);
+
+        // Draw gradient background
+        const gradient = ctx.createLinearGradient(
+          0,
+          0,
+          renderWidth,
+          renderHeight
+        );
+        gradient.addColorStop(0, 'rgba(0,0,0,0.8)');
+        gradient.addColorStop(1, 'rgba(0,0,0,0.2)');
+        ctx.fillStyle = gradient;
+        drawRoundedRect(ctx, 0, 0, renderWidth, renderHeight, 10);
+
+        // Draw user name
+        const drawText = (
+          text: string,
+          x: number,
+          y: number,
+          fontSize: number,
+          color: string
+        ) => {
+          ctx.font = `${fontSize}px sans-serif`;
+          ctx.fillStyle = color;
+          ctx.fillText(text, x, y);
+        };
+
+        drawText(userContext?.screenName || '', 10, 25, 16, 'white');
+
+        // Draw user role and job title
+        const roleText = `${userRole || 'N/A'} | Your Job Title Here`;
+        drawText(roleText, 10, 45, 12, 'white');
+
+        // Draw additional context
+        const drawIconText = (
+          icon: string,
+          text: string,
+          x: number,
+          y: number
+        ) => {
+          ctx.font = '16px sans-serif';
+          ctx.fillText(icon, x, y);
+          ctx.font = '12px sans-serif';
+          ctx.fillText(text, x + 20, y);
+        };
+
+        drawIconText('📍', timeZone || '', 10, 65);
+        drawIconText('|', `Joined at ${localTime}`, 120, 65);
+        drawIconText('💬', languages.join(', '), 10, 85);
+
+        canvas.addEventListener('click', () => {
+          console.log('Canvas clicked!');
+        });
+
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const response = await zoomSdk.drawImage({
+          imageData,
+          x: 0,
+          y: config.media.renderTarget.height - renderHeight - 40,
+          zIndex: 30,
+        });
+
+        console.log('response draw image => ', response);
+      }
+    }
+  }, [
+    config?.media?.renderTarget,
+    userContext,
+    userRole,
+    timeZone,
+    localTime,
+    languages,
+  ]);
 
   return (
     <>
@@ -347,7 +441,7 @@ const App: React.FC = () => {
                 >
                   Clear
                 </Button>
-                <Button onClick={renderCameraModeWebview}>Render</Button>
+                <Button onClick={drawNameTag}>Render</Button>
               </CardFooter>
             </Card>
             <Card className="text-left">
