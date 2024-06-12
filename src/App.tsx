@@ -85,7 +85,7 @@ const App: React.FC = () => {
       y: 0,
       width: config?.media?.renderTarget?.width,
       height: config?.media?.renderTarget?.height,
-      zIndex: 9,
+      zIndex: 999,
     });
 
     console.log('drawWebviewResponse => ', drawWebviewResponse);
@@ -331,9 +331,7 @@ const App: React.FC = () => {
               MK
             </div>
           </header>
-          {/* <CloseOutlined className="absolute right-5 top-4 cursor-pointer" /> */}
           <MeetingMode />
-          {/* <h3 className="text-[24px] font-bold my-4">Zoom App</h3> */}
           <div className="flex flex-col gap-4 w-full">
             <Card className="text-left">
               <CardHeader>

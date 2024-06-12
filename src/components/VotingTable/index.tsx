@@ -250,11 +250,6 @@ const VotingTable: React.FC = () => {
         const original = row.original;
         return (
           <div className="flex items-center">
-            {/* <Checkbox
-              checked={checked}
-              onCheckedChange={(value) => row.toggleSelected(!!value)}
-              aria-label="Select row"
-            /> */}
             <Button
               type="button"
               onClick={() => {
