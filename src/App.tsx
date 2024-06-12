@@ -576,7 +576,7 @@ const App: React.FC = () => {
             </Card>
             <Card className="text-left">
               <CardHeader>
-                <CardTitle>Immersive Mode</CardTitle>
+                <CardTitle>Collaborate Mode</CardTitle>
                 <CardDescription>
                   Draw Webview in Inmmersive Mode
                 </CardDescription>

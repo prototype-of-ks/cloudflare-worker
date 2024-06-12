@@ -19,11 +19,11 @@ const MeetingMode: React.FC = () => {
 
       <div className="my-4">
         <div className="flex flex-col gap-2 bg-[#FAD2B4] opacity-89 rounded-md p-4">
-          <span className="bg-[#cc8634] px-2 rounded-2xl inline-flex text-white w-[160px]">
-            AI Companion Tip
+          <span className="bg-[#cc8634] px-2 rounded-2xl inline-flex text-white">
+            Tips
           </span>
           <span className="text-left">
-            As host, would you like to start AI Companion?
+            Click Render button to Draw Webview in Camera Mode.
           </span>
         </div>
       </div>
