@@ -489,8 +489,8 @@ const App: React.FC = () => {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const response = await zoomSdk.drawImage({
           imageData,
-          x: config?.media?.renderTarget.width - 240,
-          y: Math.floor(config.media.renderTarget.height / 2) + 100,
+          x: config?.media?.renderTarget.width - 360,
+          y: 80,
           zIndex: 20,
         });
 
@@ -583,7 +583,7 @@ const App: React.FC = () => {
             </Card>
             <Card className="text-left mb-20">
               <CardHeader>
-                <CardTitle>Voting Table</CardTitle>
+                <CardTitle>Message box</CardTitle>
                 <CardDescription>
                   {/* Draw Webview in Inmmersive Mode */}
                   <div className="flex w-full max-w-sm items-center space-x-2">
@@ -594,13 +594,14 @@ const App: React.FC = () => {
                       onChange={(event) => {
                         setVoteMessage(event.target.value);
                       }}
+                      maxLength={14}
                     />
                     <Button
                       type="submit"
                       onClick={() => {
                         console.log('vote message => ', voteMessage);
                         drawInCameraVotingMessage({
-                          title: 'vote',
+                          title: 'Title Here',
                           text: voteMessage,
                         });
                       }}

@@ -1,18 +1,71 @@
+Basic Functions
 
-devloper 
-	- 
+Get Meeting Context
+	Meeting ID/Link: 
+		Retrieve the unique meeting identifier and link for participants to join.
+		Priority: High
 
-functional 
+	User Context: 
+		Access user-specific details such as role (host, participant), screen name, and user ID.
+		Priority: High
 
-	- context
-		- get meeting context like meeting id/link   																		-> Priority: High
-		- get user context like role, screenName, id 																		-> Priority: High
-		- get meeting language 																													-> Priority: High
-		- get meeting chat context		 																									-> Priority: High
-		- get meeting participant mail																									-> Priority: Medium
-		- send message to another participant																						-> Priority: High
-	- camera
-		- set camera background/foreground 																							-> Priority: Low
-		- draw web view: draw webview on Zoom Panel or embed web view into Video 				-> Priority: High
-		- 
-					
+	Meeting Language: 
+		Determine the language setting for the meeting to provide localized content.
+		Priority: High
+
+	Meeting Chat Context: 
+		Obtain the context of ongoing chats within the meeting to facilitate better interaction and moderation.
+		Priority: High
+		
+	Participant Email: 
+		Collect email addresses of meeting participants for follow-up communication or integration with other systems.
+		Priority: Medium
+
+	Send Message to Another Participant: 
+		Enable direct messaging within the Zoom app to enhance participant interaction and communication.
+		Priority: High
+
+Camera
+	Set Camera Background/Foreground: 
+		Customize the background or foreground of the camera 
+		Priority: Low
+	Draw Web View (Camera Mode): 
+		Render a web view on the Zoom Panel or embed a web view directly into the video stream, providing interactive content alongside the video feed.
+		Priority: High
+	Draw Immersive (Immersive Mode): 
+		Display a web view in a new tab within the Zoom client, creating an immersive experience for participants.
+		Priority: High
+
+Actions
+	Send Zoom App Invitation: 
+		Automatically send invitations to all participants, ensuring everyone can join the Zoom app features seamlessly.
+
+	Auto Mute/Unmute and Control Video: 
+		Automatically manage participants' audio and video settings to maintain order and enhance the meeting experience.
+
+	Get Participant Reactions: 
+		Capture and interpret participants' reactions using Zoom's reaction feature, providing real-time feedback during the meeting.
+
+	Get Participant Chat Messages: 
+		Access messages sent by participants in the chat, allowing for better moderation and response.
+
+	Auto Start Cloud Recording: 
+		Automatically initiate cloud recording for meetings, ensuring important sessions are captured and stored.
+
+	Show Notifications: 
+		Display notifications to participants to keep them informed of important updates and actions during the meeting.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Advanced Functions and Features
+	Name Tag Integration:
+		Display participants' information sourced from Zoom or integrated systems such as Hub and PeopleX. This feature enhances participant identification and interaction by providing relevant details about each attendee.
+
+	Participant Notifications:
+		Show real-time notifications for participants, ensuring they are updated with relevant information during the meeting. This feature helps keep participants informed about meeting status, important updates, and other critical information.
+
+	AI Helper Integration:
+		Integrate HubAI with Zoom to provide intelligent assistance and enhanced user experience within the Zoom environment. This could include features like automated meeting summaries, participant insights, and real-time assistance.
+
+	Message Sender:
+		Enable the sending of messages to the Chat or Zoom App Panel, facilitating seamless communication among participants. This feature ensures that important messages and announcements can be delivered effectively during meetings.

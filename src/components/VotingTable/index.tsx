@@ -266,7 +266,7 @@ const VotingTable: React.FC<VotingTableProps> = ({ drawImage }) => {
                 const payload = {
                   title: idea,
                   text: original.joinedAICompanion
-                    ? 'You agreed with this idea'
+                    ? 'You vote for this idea!'
                     : 'You have removed your vote',
                   success: true,
                 };
@@ -314,7 +314,7 @@ const VotingTable: React.FC<VotingTableProps> = ({ drawImage }) => {
                 const payload = {
                   title: idea,
                   text: original.allowedCaption
-                    ? 'You agreed with this idea'
+                    ? 'You downvote for this idea.'
                     : 'You have removed your vote',
                   success: false,
                 };
