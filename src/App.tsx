@@ -471,9 +471,9 @@ const App: React.FC = () => {
           ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
           ctx.filter = 'blur(10px)'; // Apply blur filter
         } else if (type === 'vote') {
-          ctx.fillStyle = 'rgb(34, 197, 94)';
+          ctx.fillStyle = 'rgba(34, 197, 94, 0.4)';
         } else {
-          ctx.fillStyle = 'rgb(239, 68, 68)';
+          ctx.fillStyle = 'rgb(239, 68, 68, 0.4)';
         }
 
         // Create a transparent rectangle with a blur effect
