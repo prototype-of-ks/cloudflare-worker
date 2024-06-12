@@ -578,7 +578,7 @@ const App: React.FC = () => {
               <CardHeader>
                 <CardTitle>Collaborate Mode</CardTitle>
                 <CardDescription>
-                  Draw Webview in Inmmersive Mode
+                  Draw Webview in Collaborate Mode
                 </CardDescription>
               </CardHeader>
               <CardFooter className="flex justify-between">
