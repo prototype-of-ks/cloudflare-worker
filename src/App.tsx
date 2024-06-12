@@ -446,7 +446,7 @@ const App: React.FC = () => {
   }) => {
     if (config?.media?.renderTarget) {
       const renderWidth = 200;
-      const renderHeight = 42;
+      const renderHeight = 50;
 
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
@@ -471,16 +471,16 @@ const App: React.FC = () => {
         // ctx.fillRect(0, 0, canvas.width / ratio, canvas.height / ratio);
 
         ctx.filter = 'blur(10px)'; // Apply blur filter
-        drawRoundedRect(ctx, 0, 0, renderWidth, renderHeight, 30);
+        drawRoundedRect(ctx, 0, 0, renderWidth, renderHeight, 24);
 
         // Draw "vote 1 for " text
         ctx.font = '12px sans-serif';
         ctx.fillStyle = 'rgb(209, 213, 219)';
-        ctx.fillText(title || 'Vote', 10, 20);
+        ctx.fillText(title || 'Vote', 10, 10);
 
         ctx.font = '16px sans-serif';
         ctx.fillStyle = 'black';
-        ctx.fillText(text || 'Hello World', 10, 24);
+        ctx.fillText(text || 'Hello World', 10, 30);
 
         canvas.addEventListener('click', () => {
           console.log('click image work!');
@@ -489,8 +489,8 @@ const App: React.FC = () => {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const response = await zoomSdk.drawImage({
           imageData,
-          x: config?.media?.renderTarget.width - 540,
-          y: Math.floor(config.media.renderTarget.height / 2) - 20,
+          x: config?.media?.renderTarget.width - 460,
+          y: Math.floor(config.media.renderTarget.height / 2) - 120,
           zIndex: 20,
         });
 
