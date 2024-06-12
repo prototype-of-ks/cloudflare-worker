@@ -400,8 +400,8 @@ const App: React.FC = () => {
         };
 
         drawIconText('📍', timeZone || '', 10, 65);
-        drawIconText('|', `Joined at ${localTime}`, 120, 65);
-        drawIconText('💬', languages.join(', '), 280, 65);
+        drawIconText('|', `Joined at ${localTime}`, 130, 65);
+        drawIconText('💬', languages.join(', '), 270, 65);
 
         canvas.addEventListener('click', () => {
           console.log('Canvas clicked!');
