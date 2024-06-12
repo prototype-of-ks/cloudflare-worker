@@ -63,6 +63,7 @@ const App: React.FC = () => {
 
   const votingTableImageId = useRef({ imageId: '' });
   const textImageId = useRef({ imageId: '' });
+  const voteImageId = useRef({ imageId: '' });
 
   const init = useCallback(async () => {
     const { context } = await zoomSdk.getRunningContext();
@@ -190,7 +191,9 @@ const App: React.FC = () => {
     text?: string;
   }) => {
     if (!text && textImageId.current.imageId) {
-      zoomSdk.clearImage({ imageId: textImageId.current.imageId }).catch(console.error);
+      zoomSdk
+        .clearImage({ imageId: textImageId.current.imageId })
+        .catch(console.error);
       return;
     }
 
@@ -476,23 +479,38 @@ const App: React.FC = () => {
         // Draw "vote 1 for " text
         ctx.font = '12px sans-serif';
         ctx.fillStyle = 'rgb(209, 213, 219)';
-        ctx.fillText(text || 'Vote', 10, 24);
+        ctx.fillText(text || 'Vote', 10, 20);
 
         ctx.font = '16px sans-serif';
         ctx.fillStyle = 'black';
-        ctx.fillText(title || 'Hello World', 10, 40);
+        ctx.fillText(title || 'Hello World', 10, 36);
 
         canvas.addEventListener('click', () => {
           console.log('click image work!');
         });
 
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+        if (voteImageId.current.imageId) {
+          zoomSdk
+            .clearImage({ imageId: voteImageId.current.imageId })
+            .catch(console.error);
+        }
+
         const response = await zoomSdk.drawImage({
           imageData,
-          x: config?.media?.renderTarget.width - 360,
-          y: 80,
+          x: config?.media?.renderTarget.width - 420,
+          y: 60,
           zIndex: 20,
         });
+
+        setTimeout(() => {
+          zoomSdk
+            .clearImage({
+              imageId: response.imageId,
+            })
+            .catch(console.error);
+        }, 1000 * 6);
 
         console.log('response draw image => ', response);
       }
