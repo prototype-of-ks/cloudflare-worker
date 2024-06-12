@@ -79,17 +79,17 @@ const App: React.FC = () => {
     });
     console.log('drawCameraContext => ', drawCameraContext);
 
-    const drawWebviewResponse = await zoomSdk.drawWebView({
-      webviewId: 'camera',
-      x: 0,
-      y: 0,
-      width: config?.media?.renderTarget?.width,
-      height: config?.media?.renderTarget?.height,
-      zIndex: 999,
-    });
+    // const drawWebviewResponse = await zoomSdk.drawWebView({
+    //   webviewId: 'camera',
+    //   x: 0,
+    //   y: 0,
+    //   width: config?.media?.renderTarget?.width,
+    //   height: config?.media?.renderTarget?.height,
+    //   zIndex: 999,
+    // });
 
-    console.log('drawWebviewResponse => ', drawWebviewResponse);
-  }, [config?.media?.renderTarget?.height, config?.media?.renderTarget?.width]);
+    // console.log('drawWebviewResponse => ', drawWebviewResponse);
+  }, []);
 
   const renderImmersiveModeWebview = useCallback(async () => {
     zoomSdk
@@ -441,7 +441,10 @@ const App: React.FC = () => {
                 >
                   Clear
                 </Button>
-                <Button onClick={drawNameTag}>Render</Button>
+                <Button onClick={async () => {
+                  await renderCameraModeWebview();
+                  await drawNameTag();
+                }}>Render</Button>
               </CardFooter>
             </Card>
             <Card className="text-left">
