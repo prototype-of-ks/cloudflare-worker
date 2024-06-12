@@ -222,10 +222,10 @@ const App: React.FC = () => {
         drawRoundedRect(ctx, 0, 0, renderWidth, renderHeight, 20);
 
         // Draw "vote 1 for " text
-        ctx.font = '28px sans-serif';
-        ctx.fillText(title || 'Vote 1', 10, 50);
+        ctx.font = '24px sans-serif';
+        ctx.fillText(title || 'Title Here', 10, 50);
 
-        ctx.font = '40px sans-serif';
+        ctx.font = '28px sans-serif';
         ctx.fillStyle = 'black';
         ctx.fillText(text || 'Hello World', 10, 100);
 
