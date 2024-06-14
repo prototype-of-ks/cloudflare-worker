@@ -3,7 +3,7 @@ import { RunningContext, GetUserContextResponse } from '@zoom/appssdk';
 import { useDev } from '../../hooks/useDev';
 import { useTimezone } from '../../hooks/useTimezone';
 import './style.css';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/web/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -11,8 +11,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
+} from '@/web/components/ui/dialog';
+import { Label } from '@/web/components/ui/label';
 
 interface ImmersiveModeProps {
   runningContext?: RunningContext;

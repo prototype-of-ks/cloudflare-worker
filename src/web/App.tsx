@@ -8,19 +8,19 @@ import { useDev } from './hooks/useDev';
 import { useTimezone } from './hooks/useTimezone';
 import { useZoomContext } from './hooks/useMeetingContext';
 import ImmersiveMode from './components/ImmersiveMode';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/web/components/ui/button';
 import {
   Card,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@/web/components/ui/card';
 import { toast } from 'sonner';
-import { Toaster } from '@/components/ui/sonner';
+import { Toaster } from '@/web/components/ui/sonner';
 import './App.css';
 import MeetingMode from './components/MeetingMode';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/web/components/ui/input';
 import VotingTable from './components/VotingTable';
 
 // Function to draw a rounded rectangle
