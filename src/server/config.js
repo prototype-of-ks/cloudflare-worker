@@ -8,6 +8,7 @@ const ssoCertPath = path.resolve(vaultPath, 'sso-cert.pem');
 const ssoPrivateKeyPath = path.resolve(vaultPath, 'privkeysso.pem');
 const sslCert = path.resolve(vaultPath, 'ssl-cert.pem');
 const sslKey = path.resolve(vaultPath, 'ssl-key.pem');
+const ssoCert = fs.readFileSync(ssoCertPath, 'utf-8').toString();
 
 export const port = {
   http: 4001,
@@ -33,7 +34,7 @@ export const sso = {
   ],
   issuer: 'https://peoplexdev1.corp.ebay.com',
   path: '/saml/acs',
-  cert: fs.readFileSync(ssoCertPath).toString(),
+  cert: ssoCert,
   privateCertPath: ssoPrivateKeyPath,
   entryPoint: 'https://ssodev.corp.ebay.com/idp/SSO.saml2',
   impersonateAs: {

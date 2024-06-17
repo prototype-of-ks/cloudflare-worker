@@ -8,19 +8,19 @@ import { useDev } from './hooks/useDev';
 import { useTimezone } from './hooks/useTimezone';
 import { useZoomContext } from './hooks/useMeetingContext';
 import ImmersiveMode from './components/ImmersiveMode';
-import { Button } from '@/web/components/ui/button';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/web/components/ui/card';
+} from '@/components/ui/card';
 import { toast } from 'sonner';
-import { Toaster } from '@/web/components/ui/sonner';
+import { Toaster } from '@/components/ui/sonner';
 import './App.css';
 import MeetingMode from './components/MeetingMode';
-import { Input } from '@/web/components/ui/input';
+import { Input } from '@/components/ui/input';
 import VotingTable from './components/VotingTable';
 
 // Function to draw a rounded rectangle
@@ -645,34 +645,6 @@ const App: React.FC = () => {
         userContext={userContext}
       />
       <VotingTable drawImage={drawVote} />
-      {/* {(runningContext === 'inCamera' || isDev) && (
-        <>
-          <div className="card">
-            <div className="gradient-background font-style user-context-wrapper">
-              <div className="user-name">{userContext?.screenName}</div>
-              <div className="user-role">
-                <span>{userRole || 'N/A'}</span>
-                <span className="separator">|</span>
-                <span>Your Job Title Here</span>
-              </div>
-              <div className="additional-context-wrapper">
-                <span className="context-section">
-                  <span>📍</span>
-                  <span>{timeZone}</span>
-                </span>
-                <span className="context-section">
-                  <span>|</span>
-                  <span>Joined at {localTime}</span>
-                </span>
-                <span className="context-section">
-                  <span>💬</span>
-                  <span>{languages.join(' ,')}</span>
-                </span>
-              </div>
-            </div>
-          </div>
-        </>
-      )} */}
     </>
   );
 };

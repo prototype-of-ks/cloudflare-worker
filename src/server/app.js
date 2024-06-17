@@ -6,7 +6,6 @@ import fs from 'fs';
 import spdy from 'spdy';
 import sessionRedis from './middlewares/redis-session.js';
 import bodyParser from 'body-parser';
-// import sso from 'ssoapp-ebay';
 import compression from 'compression';
 
 const app = express();
@@ -18,6 +17,12 @@ app.use(bodyParser.json());
 app.use(sso(config.sso));
 
 app.use(compression());
+
+app.get('/', (req, res) => {
+  res.send({
+    message: 'message'
+  });
+});
 
 http.createServer(app).listen(config.port.http, async () => {
   console.log(`🚀 Http server ready at http://localhost:${config.port.http}`);
