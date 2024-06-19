@@ -1,13 +1,8 @@
-import zoomSdk, {
-  ConfigResponse,
-  RunningContext,
-  GetUserContextResponse,
-} from '@zoom/appssdk';
-import { useEffect, useState, useCallback, useRef } from 'react';
-import { useDev } from './hooks/useDev';
+import zoomSdk from '@zoom/appssdk';
+import { useEffect, useState, useCallback, useRef, useContext } from 'react';
 import { useTimezone } from './hooks/useTimezone';
 import { useZoomContext } from './hooks/useMeetingContext';
-import ImmersiveMode from './components/ImmersiveMode';
+import ImmersiveMode from './components/ImmersiveApp';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -18,10 +13,12 @@ import {
 } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { Toaster } from '@/components/ui/sonner';
-import './App.css';
-import MeetingMode from './components/MeetingMode';
+import MeetingMode from './components/MeetingApp';
 import { Input } from '@/components/ui/input';
 import VotingTable from './components/VotingTable';
+import './App.css';
+import { ZoomAppContext } from './context/ZoomAppContext';
+import { DevToolContext } from './context/DevToolContext';
 
 // Function to draw a rounded rectangle
 function drawRoundedRect(
@@ -30,7 +27,7 @@ function drawRoundedRect(
   y: number,
   width: number,
   height: number,
-  radius: number
+  radius: number,
 ) {
   ctx.beginPath();
   ctx.moveTo(x + radius, y);
@@ -47,31 +44,19 @@ function drawRoundedRect(
 }
 
 const App: React.FC = () => {
+  const {
+    config,
+    runningContext,
+    userContext
+  } = useContext(ZoomAppContext);
+  const { isDev } = useContext(DevToolContext);
   const { localTime, timeZone } = useTimezone();
-  const { isDev } = useDev();
-  const [config, setConfig] = useState<ConfigResponse>();
   const { languages, meetingUUID } = useZoomContext(config);
-  const [runningContext, setRunningContext] = useState<RunningContext>();
-  const [userContext, setUserContext] = useState<GetUserContextResponse>({
-    role: 'host',
-    status: 'authorized',
-    screenName: '',
-    participantUUID: '',
-    participantId: '',
-  });
   const [voteMessage, setVoteMessage] = useState<string>();
 
   const votingTableImageId = useRef({ imageId: '' });
   const textImageId = useRef({ imageId: '' });
   const voteImageId = useRef({ imageId: '' });
-
-  const init = useCallback(async () => {
-    const { context } = await zoomSdk.getRunningContext();
-    const userContext = await zoomSdk.getUserContext();
-
-    setUserContext(userContext);
-    setRunningContext(context);
-  }, []);
 
   const closeRenderingContext = useCallback(async () => {
     zoomSdk.closeRenderingContext().catch(console.error);
@@ -101,7 +86,7 @@ const App: React.FC = () => {
         view: 'immersive',
       })
       .catch((e) =>
-        console.error('runRenderingContext::immersive::error => ', e)
+        console.error('runRenderingContext::immersive::error => ', e),
       );
   }, []);
 
@@ -130,52 +115,6 @@ const App: React.FC = () => {
   const userRole = `${userContext?.role
     .substring(0, 1)
     .toUpperCase()}${userContext?.role.substring(1)}`;
-
-  useEffect(() => {
-    if (isDev) {
-      console.warn('The Zoom Apps SDK is not supported in Dev mode');
-      return;
-    }
-    if (config) return;
-    (async () => {
-      const config = await zoomSdk.config({
-        capabilities: [
-          'getRunningContext',
-          'getAppContext',
-          // 'clearParticipant',
-          'closeRenderingContext',
-          'connect',
-          // 'drawParticipant',
-          'drawWebView',
-          'clearWebView',
-          'getMeetingParticipants',
-          'getMeetingUUID',
-          'getRunningContext',
-          'getUserContext',
-          'postMessage',
-          'runRenderingContext',
-          'sendAppInvitationToAllParticipants',
-          'setVideoMirrorEffect',
-          'getVideoState',
-          'getMeetingLanguages',
-          'drawImage',
-          'clearImage',
-          // events
-          'onConnect',
-          'onMeeting',
-          'onMessage',
-          'getChatContext',
-          'setVideoState',
-        ],
-      });
-      setConfig(config);
-
-      const context = await zoomSdk.getAppContext();
-      await init();
-
-      console.log('context => ', context);
-    })();
-  }, [isDev, config, init]);
 
   useEffect(() => {
     if (config) console.log('config => ', config);
@@ -293,7 +232,7 @@ const App: React.FC = () => {
           text: string,
           fontSize: number,
           yOffset: number,
-          fillStyle?: string
+          fillStyle?: string,
         ) => {
           ctx.font = `${fontSize}px sans-serif`;
           const textMetrics = ctx.measureText(text);
@@ -310,7 +249,7 @@ const App: React.FC = () => {
           'Would you like to start AI Companion?',
           12,
           10,
-          'black'
+          'black',
         );
 
         canvas.addEventListener('click', () => {
@@ -360,7 +299,7 @@ const App: React.FC = () => {
           0,
           0,
           renderWidth,
-          renderHeight
+          renderHeight,
         );
         gradient.addColorStop(0, 'rgba(0,0,0,0.2)');
         gradient.addColorStop(1, 'transparent');
@@ -376,7 +315,7 @@ const App: React.FC = () => {
           x: number,
           y: number,
           fontSize: number,
-          color: string
+          color: string,
         ) => {
           ctx.font = `${fontSize}px sans-serif`;
           ctx.fillStyle = color;
@@ -394,7 +333,7 @@ const App: React.FC = () => {
           icon: string,
           text: string,
           x: number,
-          y: number
+          y: number,
         ) => {
           ctx.font = '12px sans-serif';
           ctx.fillText(icon, x, y);
@@ -530,7 +469,6 @@ const App: React.FC = () => {
           <header className="zoom-notification-header">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                {/* <SunOutlined className="night-mode-shift-icon w-4 h-4 text-white" /> */}
                 <span className="text-white text-left">
                   Meeting ID: {meetingUUID ?? 'Z3R6UVJERjyZPMrgxFGJBw=='}
                 </span>

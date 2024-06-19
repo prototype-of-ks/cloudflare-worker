@@ -2,7 +2,6 @@ import React from 'react';
 import { RunningContext, GetUserContextResponse } from '@zoom/appssdk';
 import { useDev } from '../../hooks/useDev';
 import { useTimezone } from '../../hooks/useTimezone';
-import './style.css';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -13,6 +12,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import './style.css';
 
 interface ImmersiveModeProps {
   runningContext?: RunningContext;
@@ -78,9 +78,6 @@ const ImmersiveMode: React.FC<ImmersiveModeProps> = ({
                 <span>Gecko</span>
               </div>
             </div>
-            {/* <DialogFooter>
-              <Button type="submit">Got it</Button>
-            </DialogFooter> */}
           </DialogContent>
         </Dialog>
       </div>

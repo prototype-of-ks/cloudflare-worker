@@ -19,7 +19,7 @@ app.use(sso(config.sso));
 app.use(compression());
 
 app.get('/', (req, res) => {
-  res.send({
+  res.json({
     message: 'message'
   });
 });

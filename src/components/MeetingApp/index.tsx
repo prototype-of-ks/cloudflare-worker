@@ -27,18 +27,6 @@ const MeetingMode: React.FC = () => {
           </span>
         </div>
       </div>
-      {/* <Card className="flex flex-col gap-4 p-4">
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-row gap-4 justify-start">
-            <span className="w-24 h-16 text-[36px] rounded-lg bg-[#fdf6ed] text-[#efa54e] inline-flex items-center justify-center">
-              4/6
-            </span>
-          </div>
-          <span className="text-[16px] font-bold">
-            Joined AI Companion Participants
-          </span>
-        </div>
-      </Card> */}
     </div>
   );
 };
